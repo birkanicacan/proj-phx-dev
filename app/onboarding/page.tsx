@@ -7,7 +7,13 @@ import Image from 'next/image';
 interface Step {
   title: string;
   description: string;
-  options: string[] | { category: string; tools: string[] }[];
+  options: string[] | ToolCategory[];
+}
+
+interface ToolCategory {
+  category: string;
+  tools: string[];
+  feedbackSource: string | string[];
 }
 
 const steps: Step[] = [
@@ -44,27 +50,33 @@ const steps: Step[] = [
     options: [
       {
         category: "Customer Support",
-        tools: ["Zendesk", "Intercom"]
+        tools: ["Zendesk", "Intercom"],
+        feedbackSource: "Customer Support Tickets"
       },
       {
         category: "CRM & Sales",
-        tools: ["Salesforce", "HubSpot"]
+        tools: ["Salesforce", "HubSpot"],
+        feedbackSource: "Sales Calls"
       },
       {
         category: "Survey & Forms",
-        tools: ["Typeform", "Qualtrics"]
+        tools: ["Typeform", "Qualtrics"],
+        feedbackSource: ["NPS Surveys", "User Research"]
       },
       {
         category: "App Stores",
-        tools: ["App Store", "Play Store", "Amazon reviews"]
+        tools: ["App Store", "Play Store", "Amazon reviews"],
+        feedbackSource: "App Store Reviews"
       },
       {
         category: "Review Platforms",
-        tools: ["G2", "Amazon reviews"]
+        tools: ["G2", "Amazon reviews"],
+        feedbackSource: "Product Reviews"
       },
       {
         category: "Social Media",
-        tools: ["X (fka. Twitter)", "Reddit"]
+        tools: ["X (fka. Twitter)", "Reddit"],
+        feedbackSource: "Social Media"
       }
     ]
   }
@@ -161,29 +173,40 @@ export default function OnboardingPage() {
               </div>
             ) : (
               // Render for category objects (third step)
-              (steps[currentStep].options as { category: string; tools: string[] }[]).map((category) => (
-                <div key={category.category} className="space-y-3">
-                  <h3 className="text-lg font-medium text-gray-300">{category.category}</h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    {category.tools.map((tool) => {
-                      const isSelected = selections[currentStep]?.includes(tool);
-                      return (
-                        <button
-                          key={tool}
-                          onClick={() => handleSelection(tool)}
-                          className={`p-4 rounded-xl text-left transition-all ${
-                            isSelected
-                              ? 'bg-purple-500 bg-opacity-20 border-2 border-purple-500'
-                              : 'bg-[rgb(24,24,24)] border-2 border-transparent hover:border-gray-700'
-                          }`}
-                        >
-                          <div className="font-medium text-white">{tool}</div>
-                        </button>
-                      );
-                    })}
+              (steps[currentStep].options as { category: string; tools: string[]; feedbackSource: string | string[] }[])
+                .filter(category => {
+                  if (currentStep === 2) { // Only filter on the tools step
+                    const selectedFeedbackSources = selections[1] || []; // Get selections from step 1 (feedback sources)
+                    if (Array.isArray(category.feedbackSource)) {
+                      return category.feedbackSource.some(source => selectedFeedbackSources.includes(source));
+                    }
+                    return selectedFeedbackSources.includes(category.feedbackSource);
+                  }
+                  return true;
+                })
+                .map((category) => (
+                  <div key={category.category} className="space-y-3">
+                    <h3 className="text-lg font-medium text-gray-300">{category.category}</h3>
+                    <div className="grid grid-cols-2 gap-4">
+                      {category.tools.map((tool) => {
+                        const isSelected = selections[currentStep]?.includes(tool);
+                        return (
+                          <button
+                            key={tool}
+                            onClick={() => handleSelection(tool)}
+                            className={`p-4 rounded-xl text-left transition-all ${
+                              isSelected
+                                ? 'bg-purple-500 bg-opacity-20 border-2 border-purple-500'
+                                : 'bg-[rgb(24,24,24)] border-2 border-transparent hover:border-gray-700'
+                            }`}
+                          >
+                            <div className="font-medium text-white">{tool}</div>
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              ))
+                ))
             )}
           </div>
 
