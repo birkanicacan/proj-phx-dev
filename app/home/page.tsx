@@ -4,6 +4,241 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import IntegrationDialog from '../components/IntegrationDialog';
 import { CheckCircleIcon } from '@heroicons/react/24/outline';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+  TimeScale,
+} from 'chart.js';
+import { Pie, Line, Bar } from 'react-chartjs-2';
+import 'chartjs-adapter-date-fns';
+
+// Register ChartJS components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+  TimeScale
+);
+
+// Sample data - replace with real data from your API
+const feedbackSourcesData = {
+  labels: ['Zendesk', 'Intercom', 'Email', 'Slack'],
+  datasets: [
+    {
+      data: [300, 200, 150, 100],
+      backgroundColor: [
+        'rgba(54, 162, 235, 0.8)',
+        'rgba(255, 99, 132, 0.8)',
+        'rgba(75, 192, 192, 0.8)',
+        'rgba(255, 206, 86, 0.8)',
+      ],
+      borderColor: [
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 99, 132, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(255, 206, 86, 1)',
+      ],
+      borderWidth: 1,
+    },
+  ],
+};
+
+const timeSeriesOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      position: 'top' as const,
+    },
+  },
+  scales: {
+    x: {
+      type: 'time' as const,
+      time: {
+        unit: 'month' as const,
+        displayFormats: {
+          month: 'MMM yyyy'
+        }
+      },
+      title: {
+        display: true,
+        text: 'Date'
+      }
+    },
+    y: {
+      beginAtZero: true,
+      title: {
+        display: true,
+        text: 'Count'
+      }
+    },
+  },
+};
+
+// Generate dates for the last 6 months
+const generateDates = () => {
+  const dates = [];
+  const today = new Date();
+  for (let i = 5; i >= 0; i--) {
+    const date = new Date(today);
+    date.setMonth(date.getMonth() - i);
+    dates.push(date);
+  }
+  return dates;
+};
+
+const dates = generateDates();
+
+const feedbackVolumeData = {
+  labels: dates,
+  datasets: [
+    {
+      label: 'Zendesk',
+      data: dates.map((date, index) => ({
+        x: date,
+        y: Math.floor(Math.random() * 100) + 50
+      })),
+      borderColor: 'rgba(54, 162, 235, 1)',
+      backgroundColor: 'rgba(54, 162, 235, 0.2)',
+      tension: 0.4,
+      fill: false
+    },
+    {
+      label: 'Intercom',
+      data: dates.map((date, index) => ({
+        x: date,
+        y: Math.floor(Math.random() * 80) + 30
+      })),
+      borderColor: 'rgba(255, 99, 132, 1)',
+      backgroundColor: 'rgba(255, 99, 132, 0.2)',
+      tension: 0.4,
+      fill: false
+    },
+  ],
+};
+
+const csatData = {
+  labels: dates,
+  datasets: [
+    {
+      label: 'CSAT Score',
+      data: dates.map((date, index) => ({
+        x: date,
+        y: (Math.random() * 0.5) + 4.5
+      })),
+      borderColor: 'rgba(75, 192, 192, 1)',
+      backgroundColor: 'rgba(75, 192, 192, 0.2)',
+      tension: 0.4,
+      fill: false
+    },
+  ],
+};
+
+const npsData = {
+  labels: dates,
+  datasets: [
+    {
+      label: 'NPS Score',
+      data: dates.map((date, index) => ({
+        x: date,
+        y: Math.floor(Math.random() * 20) + 50
+      })),
+      borderColor: 'rgba(153, 102, 255, 1)',
+      backgroundColor: 'rgba(153, 102, 255, 0.2)',
+      tension: 0.4,
+      fill: false
+    },
+  ],
+};
+
+const barChartOptions = {
+  indexAxis: 'y' as const,
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      display: false
+    }
+  },
+  scales: {
+    x: {
+      beginAtZero: true,
+      title: {
+        display: true,
+        text: 'Number of Reports'
+      }
+    },
+    y: {
+      grid: {
+        display: false
+      }
+    }
+  }
+};
+
+// Sort data by value in descending order
+const sortData = (labels: string[], data: number[]) => {
+  const combined = labels.map((label, index) => ({
+    label,
+    value: data[index]
+  }));
+  combined.sort((a, b) => b.value - a.value);
+  return {
+    labels: combined.map(item => item.label),
+    data: combined.map(item => item.value)
+  };
+};
+
+const topIssuesData = {
+  labels: ['Slow Performance', 'Bug Reports', 'UI Issues', 'Feature Requests', 'Integration Problems'],
+  datasets: [
+    {
+      label: 'Number of Reports',
+      data: [65, 59, 80, 81, 56],
+      backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      borderColor: 'rgba(255, 99, 132, 1)',
+      borderWidth: 1,
+    },
+  ],
+};
+
+const topRequestsData = {
+  labels: ['New Feature A', 'Integration B', 'UI Enhancement', 'API Update', 'Mobile App'],
+  datasets: [
+    {
+      label: 'Number of Requests',
+      data: [85, 79, 90, 81, 76],
+      backgroundColor: 'rgba(54, 162, 235, 0.5)',
+      borderColor: 'rgba(54, 162, 235, 1)',
+      borderWidth: 1,
+    },
+  ],
+};
+
+// Sort the data
+const sortedIssues = sortData(topIssuesData.labels, topIssuesData.datasets[0].data);
+const sortedRequests = sortData(topRequestsData.labels, topRequestsData.datasets[0].data);
+
+// Update the chart data with sorted values
+topIssuesData.labels = sortedIssues.labels;
+topIssuesData.datasets[0].data = sortedIssues.data;
+
+topRequestsData.labels = sortedRequests.labels;
+topRequestsData.datasets[0].data = sortedRequests.data;
 
 export default function HomePage() {
   const [isFirstVisit, setIsFirstVisit] = useState(true);
@@ -189,26 +424,45 @@ export default function HomePage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-medium mb-2 text-gray-900">Recent Activity</h3>
-          <p className="text-gray-600">No recent activity yet</p>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-medium mb-2 text-gray-900">Quick Actions</h3>
-          <div className="space-y-2">
-            <button className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 rounded">
-              Create new analysis
-            </button>
-            <button className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 rounded">
-              Import feedback
-            </button>
-            <button className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 rounded">
-              Ask Wisdom
-            </button>
+          <h3 className="text-lg font-medium mb-4 text-gray-900">Feedback Sources</h3>
+          <div className="h-64">
+            <Pie data={feedbackSourcesData} options={{ maintainAspectRatio: false }} />
           </div>
         </div>
+        
         <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-medium mb-2 text-gray-900">Feedback Overview</h3>
-          <p className="text-gray-600">Connect your first feedback source to see insights</p>
+          <h3 className="text-lg font-medium mb-4 text-gray-900">Feedback Volume Over Time</h3>
+          <div className="h-64">
+            <Line data={feedbackVolumeData} options={timeSeriesOptions} />
+          </div>
+        </div>
+        
+        <div className="bg-white p-6 rounded-lg shadow">
+          <h3 className="text-lg font-medium mb-4 text-gray-900">CSAT Over Time</h3>
+          <div className="h-64">
+            <Line data={csatData} options={timeSeriesOptions} />
+          </div>
+        </div>
+        
+        <div className="bg-white p-6 rounded-lg shadow">
+          <h3 className="text-lg font-medium mb-4 text-gray-900">NPS Over Time</h3>
+          <div className="h-64">
+            <Line data={npsData} options={timeSeriesOptions} />
+          </div>
+        </div>
+        
+        <div className="bg-white p-6 rounded-lg shadow">
+          <h3 className="text-lg font-medium mb-4 text-gray-900">Top Issues</h3>
+          <div className="h-64">
+            <Bar data={topIssuesData} options={barChartOptions} />
+          </div>
+        </div>
+        
+        <div className="bg-white p-6 rounded-lg shadow">
+          <h3 className="text-lg font-medium mb-4 text-gray-900">Top Requests</h3>
+          <div className="h-64">
+            <Bar data={topRequestsData} options={barChartOptions} />
+          </div>
         </div>
       </div>
 
