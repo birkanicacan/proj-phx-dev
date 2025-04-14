@@ -486,46 +486,60 @@ export default function HomePage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-medium mb-4 text-gray-900">Feedback Sources</h3>
-          <div className="h-64">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="bg-white p-8 rounded-lg shadow">
+          <div className="mb-6">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-1">Feedback sources</h2>
+            <div className="flex items-baseline mb-2">
+              <span className="text-3xl font-bold text-gray-900">750</span>
+              <span className="ml-2 text-sm font-medium text-gray-500">total responses</span>
+            </div>
+            <p className="text-sm text-gray-600">Zendesk is your primary feedback channel, accounting for 40% of all customer interactions</p>
+          </div>
+          <div className="h-80">
             <Pie data={feedbackSourcesData} options={{ maintainAspectRatio: false }} />
           </div>
         </div>
         
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-medium mb-4 text-gray-900">Feedback Volume Over Time</h3>
-          <div className="h-64">
+        <div className="bg-white p-8 rounded-lg shadow">
+          <div className="mb-6">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-1">Feedback volume</h2>
+            <div className="flex items-baseline mb-2">
+              <span className="text-3xl font-bold text-gray-900">23%</span>
+              <span className="ml-2 text-sm font-medium text-green-600">↑ from last month</span>
+            </div>
+            <p className="text-sm text-gray-600">Consistent growth in feedback volume across all channels since November</p>
+          </div>
+          <div className="h-80">
             <Line data={feedbackVolumeData} options={timeSeriesOptions} />
           </div>
         </div>
         
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-medium mb-4 text-gray-900">CSAT Over Time</h3>
-          <div className="h-64">
+        <div className="bg-white p-8 rounded-lg shadow">
+          <div className="mb-6">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-1">Customer satisfaction</h2>
+            <div className="flex items-baseline mb-2">
+              <span className="text-3xl font-bold text-gray-900">4.8</span>
+              <span className="ml-2 text-sm font-medium text-green-600">↑ 0.3 points</span>
+            </div>
+            <p className="text-sm text-gray-600">CSAT scores remain consistently high with positive trend</p>
+          </div>
+          <div className="h-80">
             <Line data={csatData} options={timeSeriesOptions} />
           </div>
         </div>
         
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-medium mb-4 text-gray-900">NPS Over Time</h3>
-          <div className="h-64">
+        <div className="bg-white p-8 rounded-lg shadow">
+          <div className="mb-6">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-1">Net Promoter Score</h2>
+            <div className="flex items-baseline mb-2">
+              <span className="text-3xl font-bold text-gray-900">65</span>
+              <span className="ml-2 text-sm font-medium text-gray-500">Excellent</span>
+            </div>
+            <p className="text-sm text-gray-600">Strong NPS indicating high customer loyalty and satisfaction</p>
+          </div>
+          <div className="h-80">
             <Line data={npsData} options={timeSeriesOptions} />
-          </div>
-        </div>
-        
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-medium mb-4 text-gray-900">Top Issues</h3>
-          <div className="h-64">
-            <Bar data={topIssuesData} options={barChartOptions} />
-          </div>
-        </div>
-        
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-medium mb-4 text-gray-900">Top Requests</h3>
-          <div className="h-64">
-            <Bar data={topRequestsData} options={barChartOptions} />
           </div>
         </div>
       </div>
