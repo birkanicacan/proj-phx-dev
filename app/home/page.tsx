@@ -19,6 +19,8 @@ import {
 } from 'chart.js';
 import { Pie, Line, Bar } from 'react-chartjs-2';
 import 'chartjs-adapter-date-fns';
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { SparklesIcon, ExclamationTriangleIcon, ChatBubbleBottomCenterTextIcon, PlusIcon, QueueListIcon } from '@heroicons/react/24/outline';
 
 // Register ChartJS components
 ChartJS.register(
@@ -246,6 +248,7 @@ export default function HomePage() {
   const [showIntegrationDialog, setShowIntegrationDialog] = useState(false);
   const [enabledIntegrations, setEnabledIntegrations] = useState<string[]>([]);
   const [isStep1Collapsed, setIsStep1Collapsed] = useState(false);
+  const [wisdomQuery, setWisdomQuery] = useState('');
 
   useEffect(() => {
     // For testing, let's always show the section
@@ -305,6 +308,12 @@ export default function HomePage() {
       localStorage.setItem('enabledIntegrations', JSON.stringify(currentIntegrations));
       setEnabledIntegrations(currentIntegrations);
     }
+  };
+
+  const handleWisdomSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle wisdom query submission
+    console.log('Wisdom query:', wisdomQuery);
   };
 
   return (
@@ -418,6 +427,61 @@ export default function HomePage() {
                 <p className="text-gray-600 mt-1">Use the Analyze feature to dive deeper into specific aspects of your feedback. Create custom segments, compare different time periods, and generate detailed reports to uncover actionable insights.</p>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Wisdom Section */}
+      <div className="mb-8">
+        <div className="bg-white rounded-lg shadow p-6">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center space-x-3">
+              <SparklesIcon className="h-6 w-6 text-purple-600" />
+              <h2 className="text-xl font-semibold text-gray-900">Ask Wisdom</h2>
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <form onSubmit={handleWisdomSubmit}>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={wisdomQuery}
+                  onChange={(e) => setWisdomQuery(e.target.value)}
+                  placeholder="What would you like to learn, Birkan?"
+                  className="w-full px-4 py-3 pr-20 text-gray-900 placeholder-gray-500 border border-purple-200 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+                />
+                <button
+                  type="submit"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 px-4 py-1 bg-gray-100 text-gray-600 rounded hover:bg-gray-200 transition-colors"
+                >
+                  GO
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            <button className="inline-flex items-center px-4 py-2 rounded-full border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition-colors">
+              <SparklesIcon className="h-4 w-4 mr-2 text-purple-600" />
+              Summarize feedback
+            </button>
+            <button className="inline-flex items-center px-4 py-2 rounded-full border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition-colors">
+              <ExclamationTriangleIcon className="h-4 w-4 mr-2 text-red-500" />
+              Identify top issues
+            </button>
+            <button className="inline-flex items-center px-4 py-2 rounded-full border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition-colors">
+              <ChatBubbleBottomCenterTextIcon className="h-4 w-4 mr-2 text-green-600" />
+              Find user quotes
+            </button>
+            <button className="inline-flex items-center px-4 py-2 rounded-full border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition-colors">
+              <PlusIcon className="h-4 w-4 mr-2 text-blue-600" />
+              List feature requests
+            </button>
+            <button className="inline-flex items-center px-4 py-2 rounded-full border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition-colors">
+              <QueueListIcon className="h-4 w-4 mr-2 text-gray-600" />
+              More
+            </button>
           </div>
         </div>
       </div>
