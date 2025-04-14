@@ -90,7 +90,7 @@ export default function Sidebar() {
 
   const recordsItems = [
     { name: 'Feedback', icon: DocumentTextIcon, href: '/feedback' },
-    { name: 'Users', icon: UserIcon },
+    { name: 'Users', icon: UserIcon, href: '/users' },
     { name: 'Accounts', icon: BuildingOfficeIcon },
     { name: 'Opportunities', icon: ChartBarIcon },
     { name: 'Stores', icon: ShoppingBagIcon },
