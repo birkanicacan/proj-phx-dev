@@ -18,6 +18,7 @@ import {
   ShoppingCartIcon,
   TagIcon,
   DocumentTextIcon,
+  PlusIcon,
 } from '@heroicons/react/24/outline';
 
 interface SectionProps {
@@ -29,21 +30,27 @@ interface SectionProps {
   }[];
   isExpanded: boolean;
   onToggle: () => void;
+  showCreateButton?: boolean;
 }
 
-const Section = ({ title, items, isExpanded, onToggle }: SectionProps) => {
+const Section = ({ title, items, isExpanded, onToggle, showCreateButton = false }: SectionProps) => {
   return (
     <div className="mt-4">
       <button
         onClick={onToggle}
-        className="flex items-center w-full px-2 py-1 text-sm text-gray-600 hover:bg-gray-100 rounded"
+        className="group flex items-center justify-between w-full px-2 py-1 text-sm text-gray-600 hover:bg-gray-100 rounded"
       >
-        {isExpanded ? (
-          <ChevronDownIcon className="w-4 h-4 mr-1" />
-        ) : (
-          <ChevronRightIcon className="w-4 h-4 mr-1" />
+        <div className="flex items-center">
+          {isExpanded ? (
+            <ChevronDownIcon className="w-4 h-4 mr-1" />
+          ) : (
+            <ChevronRightIcon className="w-4 h-4 mr-1" />
+          )}
+          {title}
+        </div>
+        {showCreateButton && (
+          <PlusIcon className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
         )}
-        {title}
       </button>
       {isExpanded && (
         <div className="ml-4 mt-1">
@@ -75,10 +82,10 @@ const Section = ({ title, items, isExpanded, onToggle }: SectionProps) => {
 
 export default function Sidebar() {
   const [expandedSections, setExpandedSections] = useState({
-    pinned: true,
-    records: true,
-    dashboards: true,
-    workflows: true,
+    pinned: false,
+    records: false,
+    dashboards: false,
+    workflows: false,
   });
 
   const toggleSection = (section: keyof typeof expandedSections) => {
@@ -158,6 +165,7 @@ export default function Sidebar() {
           items={recordsItems}
           isExpanded={expandedSections.records}
           onToggle={() => toggleSection('records')}
+          showCreateButton={true}
         />
         <Section
           title="Dashboards"
@@ -173,12 +181,14 @@ export default function Sidebar() {
           ]}
           isExpanded={expandedSections.dashboards}
           onToggle={() => toggleSection('dashboards')}
+          showCreateButton={true}
         />
         <Section
           title="Workflows"
           items={[]}
           isExpanded={expandedSections.workflows}
           onToggle={() => toggleSection('workflows')}
+          showCreateButton={true}
         />
       </nav>
     </div>
