@@ -29,7 +29,7 @@ export default function Home() {
         </div>
         <div className="flex items-center space-x-4">
           <Link href="#" className="text-white hover:opacity-80">Sign In</Link>
-          <Link href="#" className="bg-gradient-to-r from-primary to-secondary text-white px-6 py-2 rounded-full hover:opacity-90">
+          <Link href="/signup" className="bg-gradient-to-r from-primary to-secondary text-white px-6 py-2 rounded-full hover:opacity-90">
             Try Now!
           </Link>
         </div>
@@ -48,9 +48,9 @@ export default function Home() {
           so your company can build products customers love and drive revenue.
         </p>
         <div className="flex justify-center">
-          <button className="bg-gradient-to-r from-primary to-secondary text-white px-12 py-4 rounded-full hover:opacity-90 text-lg font-medium">
+          <Link href="/signup" className="bg-gradient-to-r from-primary to-secondary text-white px-12 py-4 rounded-full hover:opacity-90 text-lg font-medium">
             Try Now!
-          </button>
+          </Link>
         </div>
 
         {/* Social Proof */}
