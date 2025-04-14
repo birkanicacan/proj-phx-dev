@@ -105,7 +105,7 @@ export default function Sidebar() {
   ];
 
   return (
-    <div className="w-64 h-screen bg-white border-r border-gray-200 flex flex-col overflow-y-auto scrollbar-hide no-scrollbar">
+    <div className="w-56 h-screen bg-white border-r border-gray-200 flex flex-col overflow-y-auto scrollbar-hide no-scrollbar">
       {/* Account Selector */}
       <div className="p-4 border-b border-gray-200 sticky top-0 bg-white z-10">
         <button className="flex items-center justify-between w-full px-2 py-1 text-sm font-medium text-gray-900 bg-gray-50 rounded hover:bg-gray-100">

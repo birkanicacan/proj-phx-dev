@@ -812,6 +812,9 @@ video {
 .w-full {
   width: 100%;
 }
+.w-56 {
+  width: 14rem;
+}
 .min-w-\[8rem\] {
   min-width: 8rem;
 }
