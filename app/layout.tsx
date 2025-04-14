@@ -5,7 +5,7 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Enterpet - Transform customer feedback into product growth',
+  title: 'Enterpret - Transform customer feedback into product growth',
   description: 'Automatically unify and accurately categorize feedback to capture the Voice of the Customer.',
 };
 
@@ -15,8 +15,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang="en" className="h-full">
+      <body className={`${inter.className} h-full`}>
+        {children}
+      </body>
     </html>
   );
 } 

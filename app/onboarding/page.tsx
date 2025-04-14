@@ -2,141 +2,153 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
-type GoalOption = {
-  id: string;
-  label: string;
-  isOther?: boolean;
-};
-
-type ToolOption = {
-  id: string;
-  label: string;
-  isOther?: boolean;
-};
-
-const goalOptions: GoalOption[] = [
-  { id: 'consolidate', label: 'Consolidate customer feedback' },
-  { id: 'analyze', label: 'Analyze customer feedback and discover insights' },
-  { id: 'track-sentiment', label: 'Track CSAT, NPS, and public sentiment' },
-  { id: 'track-feedback', label: 'Track product feedback and feature requests' },
-  { id: 'other-goal', label: 'Other', isOther: true },
+const steps = [
+  {
+    title: "What's your role?",
+    description: "Help us personalize your experience",
+    options: [
+      "Product Manager",
+      "Product Owner",
+      "Customer Experience",
+      "Customer Success",
+      "UX Research",
+      "Engineering",
+      "Other"
+    ]
+  },
+  {
+    title: "What are your main feedback sources?",
+    description: "Select all that apply",
+    options: [
+      "Customer Support Tickets",
+      "NPS Surveys",
+      "Product Reviews",
+      "User Research",
+      "Sales Calls",
+      "Social Media",
+      "App Store Reviews"
+    ]
+  },
+  {
+    title: "Which tools do you use?",
+    description: "We'll help you connect your tools",
+    options: [
+      "Zendesk",
+      "Intercom",
+      "Salesforce",
+      "Delighted",
+      "Typeform",
+      "Google Forms",
+      "App Store Connect",
+      "Play Console"
+    ]
+  }
 ];
 
-const toolOptions: ToolOption[] = [
-  { id: 'cx-tools', label: 'CX tools: Zendesk, Intercom' },
-  { id: 'crm', label: 'CRM: Salesforce, Hubspot' },
-  { id: 'survey', label: 'Survey: Qualtrics, Google Forms, Typeform' },
-  { id: 'review-sites', label: 'Review sites: G2, PowerReviews' },
-  { id: 'app-stores', label: 'App stores' },
-  { id: 'other-tools', label: 'Other', isOther: true },
-];
-
-export default function Onboarding() {
+export default function OnboardingPage() {
   const router = useRouter();
-  const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
-  const [selectedTools, setSelectedTools] = useState<string[]>([]);
-  const [otherGoal, setOtherGoal] = useState('');
-  const [otherTool, setOtherTool] = useState('');
+  const [currentStep, setCurrentStep] = useState(0);
+  const [selections, setSelections] = useState<Record<number, string[]>>({});
 
-  const handleGoalChange = (goalId: string) => {
-    if (selectedGoals.includes(goalId)) {
-      setSelectedGoals(selectedGoals.filter(id => id !== goalId));
-    } else {
-      setSelectedGoals([...selectedGoals, goalId]);
-    }
+  const handleSelection = (option: string) => {
+    setSelections(prev => {
+      const currentSelections = prev[currentStep] || [];
+      const newSelections = currentSelections.includes(option)
+        ? currentSelections.filter(item => item !== option)
+        : [...currentSelections, option];
+      
+      return {
+        ...prev,
+        [currentStep]: newSelections
+      };
+    });
   };
 
-  const handleToolChange = (toolId: string) => {
-    if (selectedTools.includes(toolId)) {
-      setSelectedTools(selectedTools.filter(id => id !== toolId));
+  const handleNext = () => {
+    if (currentStep < steps.length - 1) {
+      setCurrentStep(prev => prev + 1);
     } else {
-      setSelectedTools([...selectedTools, toolId]);
+      router.push('/app');
     }
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // In a real app, you would submit this data to your backend
-    router.push('/dashboard'); // Redirect to dashboard after onboarding
   };
 
   return (
-    <div className="min-h-screen bg-dark text-white flex items-center justify-center">
-      <div className="w-full max-w-2xl p-8 space-y-8 bg-gray-900 rounded-xl shadow-lg">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold">Welcome to Enterpret!</h2>
-          <p className="mt-2 text-gray-400">Help us personalize your experience</p>
+    <div className="min-h-screen bg-dark flex flex-col">
+      <nav className="px-6 py-4 border-b border-gray-800">
+        <div className="container mx-auto">
+          <Image src="/logo.svg" alt="Enterpret" width={120} height={32} />
         </div>
+      </nav>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
-          {/* Question 1 */}
-          <div className="space-y-4">
-            <h3 className="text-xl font-semibold">What is your goal for signing up to Enterpret?</h3>
-            <div className="space-y-2">
-              {goalOptions.map((option) => (
-                <div key={option.id} className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id={option.id}
-                    checked={selectedGoals.includes(option.id)}
-                    onChange={() => handleGoalChange(option.id)}
-                    className="h-4 w-4 text-primary focus:ring-primary border-gray-700 rounded"
-                  />
-                  <label htmlFor={option.id} className="ml-3 text-gray-300">
-                    {option.label}
-                  </label>
-                </div>
-              ))}
-              {selectedGoals.includes('other-goal') && (
-                <input
-                  type="text"
-                  value={otherGoal}
-                  onChange={(e) => setOtherGoal(e.target.value)}
-                  placeholder="Please specify"
-                  className="mt-2 block w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+      <div className="flex-1 flex flex-col items-center justify-center px-6 py-12">
+        <div className="w-full max-w-2xl">
+          <div className="mb-8">
+            <div className="flex justify-between mb-2">
+              {steps.map((_, index) => (
+                <div
+                  key={index}
+                  className={`h-1 flex-1 ${index === 0 ? '' : 'ml-2'} rounded-full ${
+                    index <= currentStep
+                      ? 'bg-gradient-to-r from-primary to-secondary'
+                      : 'bg-gray-700'
+                  }`}
                 />
-              )}
+              ))}
+            </div>
+            <div className="text-gray-400 text-sm">
+              Step {currentStep + 1} of {steps.length}
             </div>
           </div>
 
-          {/* Question 2 */}
-          <div className="space-y-4">
-            <h3 className="text-xl font-semibold">What tools do you use for feedback collection?</h3>
-            <div className="space-y-2">
-              {toolOptions.map((option) => (
-                <div key={option.id} className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id={option.id}
-                    checked={selectedTools.includes(option.id)}
-                    onChange={() => handleToolChange(option.id)}
-                    className="h-4 w-4 text-primary focus:ring-primary border-gray-700 rounded"
-                  />
-                  <label htmlFor={option.id} className="ml-3 text-gray-300">
-                    {option.label}
-                  </label>
-                </div>
-              ))}
-              {selectedTools.includes('other-tools') && (
-                <input
-                  type="text"
-                  value={otherTool}
-                  onChange={(e) => setOtherTool(e.target.value)}
-                  placeholder="Please specify"
-                  className="mt-2 block w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                />
-              )}
-            </div>
+          <div className="text-center mb-12">
+            <h1 className="text-3xl font-bold text-white mb-3">
+              {steps[currentStep].title}
+            </h1>
+            <p className="text-gray-400">
+              {steps[currentStep].description}
+            </p>
           </div>
 
-          <button
-            type="submit"
-            className="w-full bg-gradient-to-r from-primary to-secondary text-white px-4 py-2 rounded-md hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-          >
-            Continue
-          </button>
-        </form>
+          <div className="grid grid-cols-2 gap-4 mb-12">
+            {steps[currentStep].options?.map((option) => {
+              const isSelected = selections[currentStep]?.includes(option);
+              return (
+                <button
+                  key={option}
+                  onClick={() => handleSelection(option)}
+                  className={`p-4 rounded-xl text-left transition-all ${
+                    isSelected
+                      ? 'bg-purple-500 bg-opacity-20 border-2 border-purple-500'
+                      : 'bg-[rgb(24,24,24)] border-2 border-transparent hover:border-gray-700'
+                  }`}
+                >
+                  <div className="font-medium text-white">{option}</div>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="flex justify-between items-center">
+            <div>
+              {currentStep > 0 && (
+                <button
+                  onClick={() => setCurrentStep(prev => prev - 1)}
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  Back
+                </button>
+              )}
+            </div>
+            <button
+              onClick={handleNext}
+              className="bg-gradient-to-r from-primary to-secondary text-white px-8 py-3 rounded-full hover:opacity-90 transition-opacity font-medium"
+            >
+              {currentStep === steps.length - 1 ? 'Complete Setup' : 'Continue'}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
