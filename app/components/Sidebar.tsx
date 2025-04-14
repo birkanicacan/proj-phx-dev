@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   HomeIcon,
   InboxIcon,
@@ -19,6 +20,9 @@ import {
   TagIcon,
   DocumentTextIcon,
   PlusIcon,
+  CurrencyDollarIcon,
+  ExclamationTriangleIcon,
+  StarIcon,
 } from '@heroicons/react/24/outline';
 
 interface SectionProps {
@@ -27,6 +31,11 @@ interface SectionProps {
     name: string;
     icon: React.ComponentType<any>;
     href?: string;
+    items?: {
+      name: string;
+      icon: React.ComponentType<any>;
+      href?: string;
+    }[];
   }[];
   isExpanded: boolean;
   onToggle: () => void;
@@ -34,6 +43,26 @@ interface SectionProps {
 }
 
 const Section = ({ title, items, isExpanded, onToggle, showCreateButton = false }: SectionProps) => {
+  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
+  const router = useRouter();
+
+  const toggleItem = (itemName: string) => {
+    setExpandedItems(prev => ({
+      ...prev,
+      [itemName]: !prev[itemName]
+    }));
+  };
+
+  const handleLinkClick = (e: React.MouseEvent, itemName: string, href?: string) => {
+    // Prevent Records section from collapsing when clicking Feedback or Users
+    if (title === 'Records' && (itemName === 'Feedback' || itemName === 'Users')) {
+      e.preventDefault();
+      if (href) {
+        router.push(href);
+      }
+    }
+  };
+
   return (
     <div className="mt-4">
       <button
@@ -55,24 +84,64 @@ const Section = ({ title, items, isExpanded, onToggle, showCreateButton = false 
       {isExpanded && (
         <div className="ml-4 mt-1">
           {items.map((item) => (
-            item.href ? (
-              <Link
-                key={item.name}
-                href={item.href}
-                className="flex items-center w-full px-2 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded"
-              >
-                <item.icon className="w-5 h-5 mr-2 text-gray-500" />
-                {item.name}
-              </Link>
-            ) : (
-              <button
-                key={item.name}
-                className="flex items-center w-full px-2 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded"
-              >
-                <item.icon className="w-5 h-5 mr-2 text-gray-500" />
-                {item.name}
-              </button>
-            )
+            <div key={item.name}>
+              {item.items ? (
+                <button
+                  onClick={() => toggleItem(item.name)}
+                  className="flex items-center w-full px-2 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded"
+                >
+                  <div className="flex items-center">
+                    {expandedItems[item.name] ? (
+                      <ChevronDownIcon className="w-4 h-4 mr-2" />
+                    ) : (
+                      <ChevronRightIcon className="w-4 h-4 mr-2" />
+                    )}
+                    <item.icon className="w-5 h-5 mr-1 text-gray-500" />
+                    {item.name}
+                  </div>
+                </button>
+              ) : item.href ? (
+                <Link
+                  href={item.href}
+                  onClick={(e) => handleLinkClick(e, item.name, item.href)}
+                  className="flex items-center w-full px-2 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded"
+                >
+                  <item.icon className="w-5 h-5 mr-2 text-gray-500" />
+                  {item.name}
+                </Link>
+              ) : (
+                <button
+                  className="flex items-center w-full px-2 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded"
+                >
+                  <item.icon className="w-5 h-5 mr-2 text-gray-500" />
+                  {item.name}
+                </button>
+              )}
+              {item.items && expandedItems[item.name] && (
+                <div className="ml-4 mt-1">
+                  {item.items.map((subItem) => (
+                    subItem.href ? (
+                      <Link
+                        key={subItem.name}
+                        href={subItem.href}
+                        className="flex items-center w-full px-2 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded"
+                      >
+                        <subItem.icon className="w-5 h-5 mr-2 text-gray-500" />
+                        {subItem.name}
+                      </Link>
+                    ) : (
+                      <button
+                        key={subItem.name}
+                        className="flex items-center w-full px-2 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded"
+                      >
+                        <subItem.icon className="w-5 h-5 mr-2 text-gray-500" />
+                        {subItem.name}
+                      </button>
+                    )
+                  ))}
+                </div>
+              )}
+            </div>
           ))}
         </div>
       )}
@@ -187,7 +256,19 @@ export default function Sidebar() {
         />
         <Section
           title="Workflows"
-          items={[]}
+          items={[
+            { 
+              name: 'Win/Loss Analysis',
+              icon: ChartBarIcon,
+              items: [
+                { name: 'Win/Loss Dashboard', icon: ChartBarIcon, href: '/workflows/win-loss-dashboard' },
+                { name: 'Won Deals Agent', icon: CurrencyDollarIcon, href: '/workflows/won-deals-agent' },
+                { name: 'Lost Deals Agent', icon: ExclamationTriangleIcon, href: '/workflows/lost-deals-agent' },
+                { name: 'VIP Accounts List', icon: StarIcon, href: '/workflows/vip-accounts' },
+                { name: 'At Risk Accounts', icon: ExclamationTriangleIcon, href: '/workflows/at-risk-accounts' },
+              ]
+            }
+          ]}
           isExpanded={expandedSections.workflows}
           onToggle={() => toggleSection('workflows')}
           showCreateButton={true}

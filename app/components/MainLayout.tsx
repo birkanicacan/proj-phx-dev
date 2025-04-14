@@ -16,20 +16,26 @@ export default function MainLayout({ children }: MainLayoutProps) {
 
   useEffect(() => {
     // Check if it's the first visit
-    const hasVisited = localStorage.getItem('hasVisitedHome');
-    if (!hasVisited) {
+    const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
+    if (hasSeenWelcome === 'false') {
       setShowWelcome(true);
-      localStorage.setItem('hasVisitedHome', 'true');
+      localStorage.setItem('hasSeenWelcome', 'true');
     }
 
     // Check if any integration is enabled
     const enabledIntegrations = localStorage.getItem('enabledIntegrations');
     if (enabledIntegrations) {
-      const integrations = JSON.parse(enabledIntegrations);
-      setHasEnabledIntegration(integrations.length > 0);
+      try {
+        const integrations = JSON.parse(enabledIntegrations);
+        setHasEnabledIntegration(integrations.length > 0);
+      } catch (e) {
+        console.error('Error parsing enabled integrations:', e);
+        setHasEnabledIntegration(false);
+      }
     } else {
       // Initialize empty array if no integrations exist
       localStorage.setItem('enabledIntegrations', JSON.stringify([]));
+      setHasEnabledIntegration(false);
     }
   }, []);
 
