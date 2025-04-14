@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Grid -->
+  <path d="M0 0h200v200H0z" fill="#F9FAFB"/>
+  <path d="M20 20h160v160H20z" fill="#fff" stroke="#E5E7EB"/>
+  
+  <!-- Chart Elements -->
+  <path d="M40 160v-40h30v40z" fill="#E5E7EB"/>
+  <path d="M80 160v-80h30v80z" fill="#E5E7EB"/>
+  <path d="M120 160v-60h30v60z" fill="#E5E7EB"/>
+  
+  <!-- Axis Lines -->
+  <path d="M40 40v120M40 160h120" stroke="#E5E7EB"/>
+</svg> 
