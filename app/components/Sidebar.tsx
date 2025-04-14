@@ -25,6 +25,7 @@ interface SectionProps {
   items: {
     name: string;
     icon: React.ComponentType<any>;
+    href?: string;
   }[];
   isExpanded: boolean;
   onToggle: () => void;
@@ -47,13 +48,24 @@ const Section = ({ title, items, isExpanded, onToggle }: SectionProps) => {
       {isExpanded && (
         <div className="ml-4 mt-1">
           {items.map((item) => (
-            <button
-              key={item.name}
-              className="flex items-center w-full px-2 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded"
-            >
-              <item.icon className="w-5 h-5 mr-2 text-gray-500" />
-              {item.name}
-            </button>
+            item.href ? (
+              <Link
+                key={item.name}
+                href={item.href}
+                className="flex items-center w-full px-2 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded"
+              >
+                <item.icon className="w-5 h-5 mr-2 text-gray-500" />
+                {item.name}
+              </Link>
+            ) : (
+              <button
+                key={item.name}
+                className="flex items-center w-full px-2 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded"
+              >
+                <item.icon className="w-5 h-5 mr-2 text-gray-500" />
+                {item.name}
+              </button>
+            )
           ))}
         </div>
       )}
@@ -77,7 +89,7 @@ export default function Sidebar() {
   };
 
   const recordsItems = [
-    { name: 'Feedback', icon: DocumentTextIcon },
+    { name: 'Feedback', icon: DocumentTextIcon, href: '/feedback' },
     { name: 'Users', icon: UserIcon },
     { name: 'Accounts', icon: BuildingOfficeIcon },
     { name: 'Opportunities', icon: ChartBarIcon },
