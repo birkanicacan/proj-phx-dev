@@ -4,7 +4,13 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
-const steps = [
+interface Step {
+  title: string;
+  description: string;
+  options: string[] | { category: string; tools: string[] }[];
+}
+
+const steps: Step[] = [
   {
     title: "What kind of work you do?",
     description: "Help us personalize your experience",
@@ -87,6 +93,7 @@ export default function OnboardingPage() {
     if (currentStep < steps.length - 1) {
       setCurrentStep(prev => prev + 1);
     } else {
+      localStorage.setItem('hasSeenWelcome', 'false');
       router.push('/app');
     }
   };
@@ -129,29 +136,52 @@ export default function OnboardingPage() {
           </div>
 
           <div className="grid grid-cols-1 gap-6 mb-12">
-            {steps[currentStep].options?.map((category) => (
-              <div key={category.category} className="space-y-3">
-                <h3 className="text-lg font-medium text-gray-300">{category.category}</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  {category.tools.map((tool) => {
-                    const isSelected = selections[currentStep]?.includes(tool);
-                    return (
-                      <button
-                        key={tool}
-                        onClick={() => handleSelection(tool)}
-                        className={`p-4 rounded-xl text-left transition-all ${
-                          isSelected
-                            ? 'bg-purple-500 bg-opacity-20 border-2 border-purple-500'
-                            : 'bg-[rgb(24,24,24)] border-2 border-transparent hover:border-gray-700'
-                        }`}
-                      >
-                        <div className="font-medium text-white">{tool}</div>
-                      </button>
-                    );
-                  })}
-                </div>
+            {Array.isArray(steps[currentStep].options) && typeof steps[currentStep].options[0] === 'string' ? (
+              // Render for string options (first two steps)
+              <div className="grid grid-cols-2 gap-4">
+                {(steps[currentStep].options as string[]).map((option) => {
+                  const isSelected = selections[currentStep]?.includes(option);
+                  return (
+                    <button
+                      key={option}
+                      onClick={() => handleSelection(option)}
+                      className={`p-4 rounded-xl text-left transition-all ${
+                        isSelected
+                          ? 'bg-purple-500 bg-opacity-20 border-2 border-purple-500'
+                          : 'bg-[rgb(24,24,24)] border-2 border-transparent hover:border-gray-700'
+                      }`}
+                    >
+                      <div className="font-medium text-white">{option}</div>
+                    </button>
+                  );
+                })}
               </div>
-            ))}
+            ) : (
+              // Render for category objects (third step)
+              (steps[currentStep].options as { category: string; tools: string[] }[]).map((category) => (
+                <div key={category.category} className="space-y-3">
+                  <h3 className="text-lg font-medium text-gray-300">{category.category}</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    {category.tools.map((tool) => {
+                      const isSelected = selections[currentStep]?.includes(tool);
+                      return (
+                        <button
+                          key={tool}
+                          onClick={() => handleSelection(tool)}
+                          className={`p-4 rounded-xl text-left transition-all ${
+                            isSelected
+                              ? 'bg-purple-500 bg-opacity-20 border-2 border-purple-500'
+                              : 'bg-[rgb(24,24,24)] border-2 border-transparent hover:border-gray-700'
+                          }`}
+                        >
+                          <div className="font-medium text-white">{tool}</div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))
+            )}
           </div>
 
           <div className="flex justify-between items-center">

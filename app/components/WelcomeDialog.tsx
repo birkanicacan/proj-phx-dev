@@ -38,27 +38,27 @@ export default function WelcomeDialog({ isOpen, onClose }: WelcomeDialogProps) {
               <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                 <Dialog.Title
                   as="h3"
-                  className="text-lg font-medium leading-6 text-gray-900"
+                  className="text-2xl font-bold leading-6 text-gray-900 mb-4"
                 >
                   Welcome to Enterpret!
                 </Dialog.Title>
                 <div className="mt-4">
-                  <p className="text-sm text-gray-500">
+                  <p className="text-gray-600">
                     We bring together all your customer feedback—from surveys,
                     support tickets, reviews, and more—into one place. Enterpret
                     automatically categorizes and synthesizes feedback, helping you
                     uncover insights, trends, and opportunities.
                   </p>
-                  <p className="mt-2 text-sm text-gray-500">
-                    Use the AI-assistant, <strong>Wisdom</strong>, to ask questions
+                  <p className="mt-4 text-gray-600">
+                    Use the AI-assistant, <strong className="text-primary">Wisdom</strong>, to ask questions
                     and instantly analyze feedback.
                   </p>
                 </div>
 
-                <div className="mt-6">
+                <div className="mt-8">
                   <button
                     type="button"
-                    className="inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                    className="w-full bg-gradient-to-r from-primary to-secondary text-white py-3 rounded-full hover:opacity-90 transition-opacity font-medium"
                     onClick={onClose}
                   >
                     Get Started

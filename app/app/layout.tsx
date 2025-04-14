@@ -23,7 +23,7 @@ export default function AppLayout({
 
     // Show welcome dialog for first time app access
     const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
-    if (!hasSeenWelcome) {
+    if (hasSeenWelcome === 'false') {
       setShowWelcome(true);
       localStorage.setItem('hasSeenWelcome', 'true');
     }
