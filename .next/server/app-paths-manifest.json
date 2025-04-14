@@ -1,7 +1,7 @@
 {
-  "/page": "app/page.js",
-  "/feedback/page": "app/feedback/page.js",
+  "/dashboard/win-loss-q1-25/page": "app/dashboard/win-loss-q1-25/page.js",
   "/users/page": "app/users/page.js",
   "/analyze/page": "app/analyze/page.js",
+  "/feedback/page": "app/feedback/page.js",
   "/taxonomy/page": "app/taxonomy/page.js"
 }

@@ -147,7 +147,9 @@ export default function Sidebar() {
         {/* Collapsible Sections */}
         <Section
           title="Pinned"
-          items={[]}
+          items={[
+            { name: 'Win/Loss Analysis Q1\'25', icon: ChartBarIcon, href: '/dashboard/win-loss-q1-25' }
+          ]}
           isExpanded={expandedSections.pinned}
           onToggle={() => toggleSection('pinned')}
         />
