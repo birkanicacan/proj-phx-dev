@@ -115,58 +115,60 @@ export default function Sidebar() {
       </div>
 
       {/* Main Navigation */}
-      <nav className="flex-1 p-4 space-y-1 bg-white">
-        <button className="flex items-center w-full px-2 py-2 text-sm text-gray-900 hover:bg-gray-100 rounded">
+      <nav className="flex-1 p-4 space-y-0 bg-white">
+        <button className="flex items-center w-full px-2 py-1 text-sm text-gray-900 hover:bg-gray-100 rounded">
           <SearchIcon className="w-5 h-5 mr-2 text-gray-700" />
           Search
         </button>
-        <Link href="/home" className="flex items-center w-full px-2 py-2 text-sm text-gray-900 hover:bg-gray-100 rounded">
+        <Link href="/home" className="flex items-center w-full px-2 py-1 text-sm text-gray-900 hover:bg-gray-100 rounded">
           <HomeIcon className="w-5 h-5 mr-2 text-gray-700" />
           Home
         </Link>
-        <button className="flex items-center w-full px-2 py-2 text-sm text-gray-900 hover:bg-gray-100 rounded">
+        <button className="flex items-center w-full px-2 py-1 text-sm text-gray-900 hover:bg-gray-100 rounded">
           <InboxIcon className="w-5 h-5 mr-2 text-gray-700" />
           Inbox
         </button>
         <Link
           href="/analyze"
-          className="flex items-center w-full px-2 py-2 text-sm text-gray-900 hover:bg-gray-100 rounded"
+          className="flex items-center w-full px-2 py-1 text-sm text-gray-900 hover:bg-gray-100 rounded"
         >
           <ChartBarIcon className="w-5 h-5 mr-2 text-gray-700" />
           Analyze
         </Link>
-        <button className="flex items-center w-full px-2 py-2 text-sm text-gray-900 hover:bg-gray-100 rounded">
+        <button className="flex items-center w-full px-2 py-1 text-sm text-gray-900 hover:bg-gray-100 rounded">
           <UserGroupIcon className="w-5 h-5 mr-2 text-gray-700" />
           Agents
         </button>
         <Link
           href="/taxonomy"
-          className="flex items-center w-full px-2 py-2 text-sm text-gray-900 hover:bg-gray-100 rounded"
+          className="flex items-center w-full px-2 py-1 text-sm text-gray-900 hover:bg-gray-100 rounded"
         >
           <AdjustmentsHorizontalIcon className="w-5 h-5 mr-2 text-gray-700" />
           Taxonomy
         </Link>
-        <button className="flex items-center w-full px-2 py-2 text-sm text-gray-900 hover:bg-gray-100 rounded">
+        <button className="flex items-center w-full px-2 py-1 text-sm text-gray-900 hover:bg-gray-100 rounded">
           <CogIcon className="w-5 h-5 mr-2 text-gray-700" />
           Settings
         </button>
 
         {/* Collapsible Sections */}
-        <Section
-          title="Pinned"
-          items={[
-            { name: 'Win/Loss Analysis Q1\'25', icon: ChartBarIcon, href: '/dashboard/win-loss-q1-25' }
-          ]}
-          isExpanded={expandedSections.pinned}
-          onToggle={() => toggleSection('pinned')}
-        />
-        <Section
-          title="Records"
-          items={recordsItems}
-          isExpanded={expandedSections.records}
-          onToggle={() => toggleSection('records')}
-          showCreateButton={true}
-        />
+        <div className="mt-4 space-y-1">
+          <Section
+            title="Pinned"
+            items={[
+              { name: 'Win/Loss Analysis Q1\'25', icon: ChartBarIcon, href: '/dashboard/win-loss-q1-25' }
+            ]}
+            isExpanded={expandedSections.pinned}
+            onToggle={() => toggleSection('pinned')}
+          />
+          <Section
+            title="Records"
+            items={recordsItems}
+            isExpanded={expandedSections.records}
+            onToggle={() => toggleSection('records')}
+            showCreateButton={true}
+          />
+        </div>
         <Section
           title="Dashboards"
           items={[
