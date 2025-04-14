@@ -30,7 +30,7 @@ export default function Home() {
         <div className="flex items-center space-x-4">
           <Link href="#" className="text-white hover:opacity-80">Sign In</Link>
           <Link href="#" className="bg-gradient-to-r from-primary to-secondary text-white px-6 py-2 rounded-full hover:opacity-90">
-            Book a Demo
+            Try Now!
           </Link>
         </div>
       </nav>
@@ -47,12 +47,9 @@ export default function Home() {
           Automatically unify and accurately categorize feedback to capture the Voice of the Customer—
           so your company can build products customers love and drive revenue.
         </p>
-        <div className="flex justify-center space-x-4">
-          <button className="bg-gradient-to-r from-primary to-secondary text-white px-8 py-3 rounded-full hover:opacity-90">
-            Book a Demo
-          </button>
-          <button className="border border-white text-white px-8 py-3 rounded-full hover:bg-white/10">
-            Take a Product Tour ▶
+        <div className="flex justify-center">
+          <button className="bg-gradient-to-r from-primary to-secondary text-white px-12 py-4 rounded-full hover:opacity-90 text-lg font-medium">
+            Try Now!
           </button>
         </div>
 
