@@ -118,9 +118,6 @@ export default function WinLossAnalysis() {
           <div className="bg-white p-6 rounded-lg shadow">
             <div className="flex justify-between items-start mb-4">
               <h3 className="text-lg font-semibold text-gray-900">Total Number of Opportunities</h3>
-              <button className="text-gray-400 hover:text-gray-600">
-                <ChevronDownIcon className="h-5 w-5" />
-              </button>
             </div>
             <div className="text-center">
               <div className="text-5xl font-bold text-gray-900">237</div>
@@ -132,9 +129,6 @@ export default function WinLossAnalysis() {
           <div className="bg-white p-6 rounded-lg shadow">
             <div className="flex justify-between items-start mb-4">
               <h3 className="text-lg font-semibold text-gray-900">Total Won</h3>
-              <button className="text-gray-400 hover:text-gray-600">
-                <ChevronDownIcon className="h-5 w-5" />
-              </button>
             </div>
             <div className="flex items-center justify-center h-48">
               <div className="text-center text-gray-500">No Records Found</div>
@@ -145,9 +139,6 @@ export default function WinLossAnalysis() {
           <div className="bg-white p-6 rounded-lg shadow">
             <div className="flex justify-between items-start mb-4">
               <h3 className="text-lg font-semibold text-gray-900">Total Lost</h3>
-              <button className="text-gray-400 hover:text-gray-600">
-                <ChevronDownIcon className="h-5 w-5" />
-              </button>
             </div>
             <div className="text-center">
               <div className="text-5xl font-bold text-gray-900">237</div>
@@ -163,9 +154,6 @@ export default function WinLossAnalysis() {
         <div className="bg-white p-6 rounded-lg shadow">
           <div className="flex justify-between items-start mb-4">
             <h3 className="text-lg font-semibold text-gray-900">Total Won/Lost</h3>
-            <button className="text-gray-400 hover:text-gray-600">
-              <ChevronDownIcon className="h-5 w-5" />
-            </button>
           </div>
           <div className="h-64">
             <Doughnut 
@@ -189,9 +177,6 @@ export default function WinLossAnalysis() {
         <div className="bg-white p-6 rounded-lg shadow">
           <div className="flex justify-between items-start mb-4">
             <h3 className="text-lg font-semibold text-gray-900">Impacted Revenue</h3>
-            <button className="text-gray-400 hover:text-gray-600">
-              <ChevronDownIcon className="h-5 w-5" />
-            </button>
           </div>
           <div className="h-64">
             <Bar
@@ -228,9 +213,6 @@ export default function WinLossAnalysis() {
         <div className="bg-white p-6 rounded-lg shadow">
           <div className="flex justify-between items-start mb-4">
             <h3 className="text-lg font-semibold text-gray-900">Lost Deals</h3>
-            <button className="text-gray-400 hover:text-gray-600">
-              <ChevronDownIcon className="h-5 w-5" />
-            </button>
           </div>
           <div className="h-64 overflow-y-auto">
             <Bar

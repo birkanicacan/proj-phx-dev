@@ -1,7 +1,7 @@
 {
   "/onboarding/page": "app/onboarding/page.js",
-  "/users/page": "app/users/page.js",
   "/dashboard/win-loss-q1-25/page": "app/dashboard/win-loss-q1-25/page.js",
-  "/home/page": "app/home/page.js",
-  "/feedback/page": "app/feedback/page.js"
+  "/feedback/page": "app/feedback/page.js",
+  "/users/page": "app/users/page.js",
+  "/home/page": "app/home/page.js"
 }
