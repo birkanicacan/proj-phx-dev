@@ -98,9 +98,9 @@ export default function Sidebar() {
   ];
 
   return (
-    <div className="w-64 h-screen bg-white border-r border-gray-200 flex flex-col">
+    <div className="w-64 h-screen bg-white border-r border-gray-200 flex flex-col overflow-y-auto scrollbar-hide no-scrollbar">
       {/* Account Selector */}
-      <div className="p-4 border-b border-gray-200">
+      <div className="p-4 border-b border-gray-200 sticky top-0 bg-white z-10">
         <button className="flex items-center justify-between w-full px-2 py-1 text-sm font-medium text-gray-900 bg-gray-50 rounded hover:bg-gray-100">
           <span>Account</span>
           <ChevronDownIcon className="w-4 h-4" />
@@ -108,7 +108,7 @@ export default function Sidebar() {
       </div>
 
       {/* Main Navigation */}
-      <nav className="flex-1 p-4 space-y-1">
+      <nav className="flex-1 p-4 space-y-1 bg-white">
         <button className="flex items-center w-full px-2 py-2 text-sm text-gray-900 hover:bg-gray-100 rounded">
           <SearchIcon className="w-5 h-5 mr-2 text-gray-700" />
           Search
@@ -161,7 +161,16 @@ export default function Sidebar() {
         />
         <Section
           title="Dashboards"
-          items={[]}
+          items={[
+            { name: 'Win/Loss Analysis Q1\'25', icon: ChartBarIcon, href: '/dashboard/win-loss-q1-25' },
+            { name: 'Sales Performance Dashboard', icon: ChartBarIcon, href: '/dashboard/sales-performance' },
+            { name: 'Product Analytics Overview', icon: ChartBarIcon, href: '/dashboard/product-analytics' },
+            { name: 'Marketing Campaign ROI', icon: ChartBarIcon, href: '/dashboard/marketing-roi' },
+            { name: 'Customer Success Metrics', icon: ChartBarIcon, href: '/dashboard/customer-success' },
+            { name: 'Revenue Growth Tracker', icon: ChartBarIcon, href: '/dashboard/revenue-growth' },
+            { name: 'Market Share Analysis', icon: ChartBarIcon, href: '/dashboard/market-share' },
+            { name: 'Competitive Intelligence', icon: ChartBarIcon, href: '/dashboard/competitive-intel' }
+          ]}
           isExpanded={expandedSections.dashboards}
           onToggle={() => toggleSection('dashboards')}
         />
