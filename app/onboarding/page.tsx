@@ -93,8 +93,11 @@ export default function OnboardingPage() {
     if (currentStep < steps.length - 1) {
       setCurrentStep(prev => prev + 1);
     } else {
+      // Store selected tools in localStorage
+      const selectedTools = selections[2] || []; // Step 2 contains the tools
+      localStorage.setItem('selectedTools', JSON.stringify(selectedTools));
       localStorage.setItem('hasSeenWelcome', 'false');
-      router.push('/app');
+      router.push('/home');
     }
   };
 

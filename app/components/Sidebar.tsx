@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import {
   HomeIcon,
   InboxIcon,
@@ -100,10 +101,10 @@ export default function Sidebar() {
           <SearchIcon className="w-5 h-5 mr-2 text-gray-500" />
           Search
         </button>
-        <button className="flex items-center w-full px-2 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+        <Link href="/home" className="flex items-center w-full px-2 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
           <HomeIcon className="w-5 h-5 mr-2 text-gray-500" />
           Home
-        </button>
+        </Link>
         <button className="flex items-center w-full px-2 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
           <InboxIcon className="w-5 h-5 mr-2 text-gray-500" />
           Inbox
