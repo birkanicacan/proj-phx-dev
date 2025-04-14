@@ -6,15 +6,16 @@ import Image from 'next/image';
 
 const steps = [
   {
-    title: "What's your role?",
+    title: "What kind of work you do?",
     description: "Help us personalize your experience",
     options: [
-      "Product Manager",
-      "Product Owner",
       "Customer Experience",
+      "Product management",
+      "Marketing",
       "Customer Success",
       "UX Research",
       "Engineering",
+      "Sales",
       "Other"
     ]
   },
@@ -35,14 +36,30 @@ const steps = [
     title: "Which tools do you use?",
     description: "We'll help you connect your tools",
     options: [
-      "Zendesk",
-      "Intercom",
-      "Salesforce",
-      "Delighted",
-      "Typeform",
-      "Google Forms",
-      "App Store Connect",
-      "Play Console"
+      {
+        category: "Customer Support",
+        tools: ["Zendesk", "Intercom"]
+      },
+      {
+        category: "CRM & Sales",
+        tools: ["Salesforce", "HubSpot"]
+      },
+      {
+        category: "Survey & Forms",
+        tools: ["Typeform", "Qualtrics"]
+      },
+      {
+        category: "App Stores",
+        tools: ["App Store", "Play Store", "Amazon reviews"]
+      },
+      {
+        category: "Review Platforms",
+        tools: ["G2", "Amazon reviews"]
+      },
+      {
+        category: "Social Media",
+        tools: ["X (fka. Twitter)", "Reddit"]
+      }
     ]
   }
 ];
@@ -111,23 +128,30 @@ export default function OnboardingPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-12">
-            {steps[currentStep].options?.map((option) => {
-              const isSelected = selections[currentStep]?.includes(option);
-              return (
-                <button
-                  key={option}
-                  onClick={() => handleSelection(option)}
-                  className={`p-4 rounded-xl text-left transition-all ${
-                    isSelected
-                      ? 'bg-purple-500 bg-opacity-20 border-2 border-purple-500'
-                      : 'bg-[rgb(24,24,24)] border-2 border-transparent hover:border-gray-700'
-                  }`}
-                >
-                  <div className="font-medium text-white">{option}</div>
-                </button>
-              );
-            })}
+          <div className="grid grid-cols-1 gap-6 mb-12">
+            {steps[currentStep].options?.map((category) => (
+              <div key={category.category} className="space-y-3">
+                <h3 className="text-lg font-medium text-gray-300">{category.category}</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  {category.tools.map((tool) => {
+                    const isSelected = selections[currentStep]?.includes(tool);
+                    return (
+                      <button
+                        key={tool}
+                        onClick={() => handleSelection(tool)}
+                        className={`p-4 rounded-xl text-left transition-all ${
+                          isSelected
+                            ? 'bg-purple-500 bg-opacity-20 border-2 border-purple-500'
+                            : 'bg-[rgb(24,24,24)] border-2 border-transparent hover:border-gray-700'
+                        }`}
+                      >
+                        <div className="font-medium text-white">{tool}</div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
           </div>
 
           <div className="flex justify-between items-center">
