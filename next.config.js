@@ -4,9 +4,10 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  basePath: '/proj-phx-dev',
-  assetPrefix: '/proj-phx-dev/',
+  basePath: process.env.NODE_ENV === 'production' ? '/proj-phx-dev' : '',
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/proj-phx-dev/' : '',
   trailingSlash: true,
+  distDir: 'out',
 }
 
 module.exports = nextConfig 
