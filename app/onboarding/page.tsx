@@ -4,10 +4,21 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
+interface PlanFeature {
+  free: string | number;
+  premium: string | number;
+  icon?: string;
+}
+
+interface PlanFeatures {
+  [key: string]: PlanFeature;
+}
+
 interface Step {
   title: string;
   description: string;
-  options: string[] | ToolCategory[];
+  options: string[] | ToolCategory[] | PlanFeatures;
+  type?: 'default' | 'pricing';
 }
 
 interface ToolCategory {
@@ -79,6 +90,28 @@ const steps: Step[] = [
         feedbackSource: "Social Media"
       }
     ]
+  },
+  {
+    title: "Choose your trial",
+    description: "Start with a 14-day premium trial",
+    type: 'pricing',
+    options: {
+      "Feedback Records": {
+        free: "100 records from each feedback source",
+        premium: "1000 records from each feedback source",
+        icon: "📊"
+      },
+      "Wisdom Credits": {
+        free: "10 queries",
+        premium: "100 queries",
+        icon: "🤖"
+      },
+      "Integrations": {
+        free: "Starter integrations including Zendesk, Intercom, Twitter, Reddit, and manual uploads",
+        premium: "Starter + Premium integations including Salesforce, Gong, and more",
+        icon: "🔌"
+      }
+    }
   }
 ];
 
@@ -86,6 +119,26 @@ export default function OnboardingPage() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
   const [selections, setSelections] = useState<Record<number, string[]>>({});
+  const [showPaymentForm, setShowPaymentForm] = useState(false);
+  const [paymentDetails, setPaymentDetails] = useState({
+    name: '',
+    businessName: '',
+    cardNumber: '',
+    expiryDate: '',
+    cvc: ''
+  });
+
+  const handlePaymentFieldClick = () => {
+    if (!paymentDetails.name) {
+      setPaymentDetails({
+        name: 'Birkan Icacan',
+        businessName: 'Acme',
+        cardNumber: '4242 4242 4242 4242',
+        expiryDate: '12 / 24',
+        cvc: '123'
+      });
+    }
+  };
 
   const handleSelection = (option: string) => {
     setSelections(prev => {
@@ -101,16 +154,165 @@ export default function OnboardingPage() {
     });
   };
 
+  const handlePaymentSubmit = () => {
+    // Here you would handle the payment submission
+    // For now, we'll just proceed to the home page
+    const selectedTools = selections[2] || [];
+    localStorage.setItem('selectedTools', JSON.stringify(selectedTools));
+    localStorage.setItem('hasSeenWelcome', 'false');
+    router.push('/home');
+  };
+
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(prev => prev + 1);
     } else {
       // Store selected tools in localStorage
-      const selectedTools = selections[2] || []; // Step 2 contains the tools
+      const selectedTools = selections[2] || [];
       localStorage.setItem('selectedTools', JSON.stringify(selectedTools));
       localStorage.setItem('hasSeenWelcome', 'false');
       router.push('/home');
     }
+  };
+
+  const handleStartFreeTrial = () => {
+    const selectedTools = selections[2] || [];
+    localStorage.setItem('selectedTools', JSON.stringify(selectedTools));
+    localStorage.setItem('hasSeenWelcome', 'false');
+    router.push('/home');
+  };
+
+  const renderPricingStep = () => {
+    const features = steps[currentStep].options as PlanFeatures;
+    
+    return (
+      <div className="w-full">
+        <div className="grid grid-cols-2 gap-8">
+          {/* Free Plan */}
+          <div className="bg-[rgb(24,24,24)] p-6 rounded-xl border-2 border-transparent">
+            <h3 className="text-xl font-bold text-white mb-4">Free Trial</h3>
+            <div className="space-y-4">
+              {Object.entries(features).map(([name, feature]) => (
+                <div key={name} className="flex items-start space-x-3">
+                  {feature.icon && <span className="text-2xl">{feature.icon}</span>}
+                  <div>
+                    <p className="text-white font-medium">{name}</p>
+                    <p className="text-gray-400">{feature.free}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <button
+              onClick={handleStartFreeTrial}
+              className="w-full mt-8 py-3 px-4 border-2 border-gray-700 text-white rounded-full hover:bg-gray-700 transition-colors"
+            >
+              Continue with Free Trial
+            </button>
+          </div>
+
+          {/* Premium Plan */}
+          <div className="bg-[rgb(24,24,24)] p-6 rounded-xl border-2 border-purple-500">
+            <div className="bg-purple-500 text-white text-sm font-medium px-3 py-1 rounded-full inline-block mb-4">
+              RECOMMENDED
+            </div>
+            <h3 className="text-xl font-bold text-white mb-4">Premium Trial</h3>
+            <div className="space-y-4">
+              {Object.entries(features).map(([name, feature]) => (
+                <div key={name} className="flex items-start space-x-3">
+                  {feature.icon && <span className="text-2xl">{feature.icon}</span>}
+                  <div>
+                    <p className="text-white font-medium">{name}</p>
+                    <p className="text-gray-400">{feature.premium}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <button
+              onClick={() => setShowPaymentForm(true)}
+              className="w-full mt-8 bg-gradient-to-r from-primary to-secondary text-white px-8 py-3 rounded-full hover:opacity-90 transition-opacity font-medium"
+            >
+              Start Premium Trial
+            </button>
+          </div>
+        </div>
+
+        {showPaymentForm && (
+          <div className="mt-8 bg-[rgb(24,24,24)] p-6 rounded-xl">
+            <h3 className="text-xl font-bold text-white mb-6">Payment Details</h3>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-gray-400 mb-2">Name</label>
+                  <input
+                    type="text"
+                    value={paymentDetails.name}
+                    onChange={(e) => setPaymentDetails(prev => ({ ...prev, name: e.target.value }))}
+                    onClick={handlePaymentFieldClick}
+                    className="w-full bg-[rgb(32,32,32)] border border-gray-700 rounded-lg px-4 py-2 text-white"
+                    placeholder="Your name"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-400 mb-2">Business name (optional)</label>
+                  <input
+                    type="text"
+                    value={paymentDetails.businessName}
+                    onChange={(e) => setPaymentDetails(prev => ({ ...prev, businessName: e.target.value }))}
+                    onClick={handlePaymentFieldClick}
+                    className="w-full bg-[rgb(32,32,32)] border border-gray-700 rounded-lg px-4 py-2 text-white"
+                    placeholder="Acme Inc."
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-gray-400 mb-2">Card number</label>
+                <input
+                  type="text"
+                  value={paymentDetails.cardNumber}
+                  onChange={(e) => setPaymentDetails(prev => ({ ...prev, cardNumber: e.target.value }))}
+                  onClick={handlePaymentFieldClick}
+                  className="w-full bg-[rgb(32,32,32)] border border-gray-700 rounded-lg px-4 py-2 text-white"
+                  placeholder="1234 1234 1234 1234"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-gray-400 mb-2">Expiration date</label>
+                  <input
+                    type="text"
+                    value={paymentDetails.expiryDate}
+                    onChange={(e) => setPaymentDetails(prev => ({ ...prev, expiryDate: e.target.value }))}
+                    onClick={handlePaymentFieldClick}
+                    className="w-full bg-[rgb(32,32,32)] border border-gray-700 rounded-lg px-4 py-2 text-white"
+                    placeholder="MM / YY"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-400 mb-2">Security code</label>
+                  <input
+                    type="text"
+                    value={paymentDetails.cvc}
+                    onChange={(e) => setPaymentDetails(prev => ({ ...prev, cvc: e.target.value }))}
+                    onClick={handlePaymentFieldClick}
+                    className="w-full bg-[rgb(32,32,32)] border border-gray-700 rounded-lg px-4 py-2 text-white"
+                    placeholder="CVC"
+                  />
+                </div>
+              </div>
+
+              <button
+                onClick={handlePaymentSubmit}
+                className="w-full mt-4 bg-gradient-to-r from-primary to-secondary text-white px-8 py-3 rounded-full hover:opacity-90 transition-opacity font-medium"
+              >
+                Start Premium Trial
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -151,7 +353,9 @@ export default function OnboardingPage() {
           </div>
 
           <div className="grid grid-cols-1 gap-6 mb-12">
-            {Array.isArray(steps[currentStep].options) && typeof steps[currentStep].options[0] === 'string' ? (
+            {steps[currentStep].type === 'pricing' ? (
+              renderPricingStep()
+            ) : Array.isArray(steps[currentStep].options) && typeof steps[currentStep].options[0] === 'string' ? (
               // Render for string options (first two steps)
               <div className="grid grid-cols-2 gap-4">
                 {(steps[currentStep].options as string[]).map((option) => {
@@ -212,7 +416,7 @@ export default function OnboardingPage() {
 
           <div className="flex justify-between items-center">
             <div>
-              {currentStep > 0 && (
+              {currentStep > 0 && !showPaymentForm && (
                 <button
                   onClick={() => setCurrentStep(prev => prev - 1)}
                   className="text-gray-400 hover:text-white transition-colors"
@@ -221,12 +425,14 @@ export default function OnboardingPage() {
                 </button>
               )}
             </div>
-            <button
-              onClick={handleNext}
-              className="bg-gradient-to-r from-primary to-secondary text-white px-8 py-3 rounded-full hover:opacity-90 transition-opacity font-medium"
-            >
-              {currentStep === steps.length - 1 ? 'Complete Setup' : 'Continue'}
-            </button>
+            {!steps[currentStep].type && (
+              <button
+                onClick={handleNext}
+                className="bg-gradient-to-r from-primary to-secondary text-white px-8 py-3 rounded-full hover:opacity-90 transition-opacity font-medium"
+              >
+                {currentStep === steps.length - 1 ? 'Complete Setup' : 'Continue'}
+              </button>
+            )}
           </div>
         </div>
       </div>
