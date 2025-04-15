@@ -96,10 +96,15 @@
       "static/chunks/main-app.js",
       "static/chunks/app/accounts/layout.js"
     ],
-    "/_not-found/page": [
+    "/agents/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/_not-found/page.js"
+      "static/chunks/app/agents/page.js"
+    ],
+    "/agents/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/agents/layout.js"
     ]
   }
 }

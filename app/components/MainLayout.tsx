@@ -51,7 +51,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
       <Sidebar />
       <main className="flex-1 overflow-auto">
         <div className="p-8">
-          {!hasEnabledIntegration && !['/feedback', '/dashboard/win-loss-q1-25', '/users'].includes(pathname) && (
+          {!hasEnabledIntegration && !['/feedback', '/dashboard/win-loss-q1-25', '/users', '/agents'].includes(pathname) && (
             <div className="mb-8">
               <div className="bg-white rounded-lg shadow p-6">
                 <h2 className="text-xl font-semibold mb-4">Get Started</h2>
