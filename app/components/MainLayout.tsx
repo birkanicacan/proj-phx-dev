@@ -51,22 +51,6 @@ export default function MainLayout({ children }: MainLayoutProps) {
       <Sidebar />
       <main className="flex-1 overflow-auto">
         <div className="p-8">
-          {!hasEnabledIntegration && !['/feedback', '/dashboard/win-loss-q1-25', '/users', '/agents'].includes(pathname) && (
-            <div className="mb-8">
-              <div className="bg-white rounded-lg shadow p-6">
-                <h2 className="text-xl font-semibold mb-4">Get Started</h2>
-                <p className="text-gray-600 mb-4">
-                  Welcome to Enterpret! Let's set up your workspace by connecting your feedback sources.
-                </p>
-                <button
-                  onClick={() => setShowIntegrationDialog(true)}
-                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                >
-                  Import Feedback
-                </button>
-              </div>
-            </div>
-          )}
           {children}
         </div>
       </main>
