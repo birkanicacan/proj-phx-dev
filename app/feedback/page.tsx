@@ -10,7 +10,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -20,56 +20,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { ChevronDown, Filter, Plus, Search } from 'lucide-react';
-
-// Types for feedback data
-type FeedbackSource = 'Zendesk' | 'Twitter' | 'Salesforce' | 'G2' | 'Other';
-type FeedbackType = 'Bug' | 'Feature Request' | 'Complaint' | 'Praise';
-type FeedbackStatus = 'New' | 'In Review' | 'Addressed';
-type Sentiment = 'Positive' | 'Neutral' | 'Negative';
-type Priority = 'High' | 'Medium' | 'Low';
-
-interface FeedbackRecord {
-  id: string;
-  source: FeedbackSource;
-  dateReceived: string;
-  customerName: string;
-  customerId: string;
-  type: FeedbackType;
-  status: FeedbackStatus;
-  sentiment: Sentiment;
-  priority: Priority;
-  theme: string;
-  content: string;
-  summary: string;
-  assignedTo?: string;
-  tags: string[];
-  user?: {
-    id: string;
-    name: string;
-    role: string;
-  };
-  account?: {
-    id: string;
-    name: string;
-    tier: 'Enterprise' | 'Business' | 'Startup';
-  };
-  opportunity?: {
-    id: string;
-    name: string;
-    value: string;
-    stage: string;
-  };
-  store?: {
-    id: string;
-    name: string;
-    location: string;
-  };
-  product?: {
-    id: string;
-    name: string;
-    category: string;
-  };
-}
+import { FeedbackRecord, FeedbackStatus, Priority, Sentiment } from '../types/feedback';
+import FeedbackDetailsPanel from '../components/FeedbackDetailsPanel';
 
 // Sample data
 const sampleFeedback: FeedbackRecord[] = [
@@ -677,7 +629,9 @@ const getPriorityColor = (priority: Priority) => {
     case 'Medium':
       return 'bg-yellow-100 text-yellow-900';
     case 'Low':
-      return 'bg-blue-100 text-blue-900';
+      return 'bg-green-100 text-green-900';
+    default:
+      return 'bg-gray-100 text-gray-900';
   }
 };
 
@@ -694,9 +648,14 @@ const getStatusColor = (status: FeedbackStatus) => {
 
 export default function FeedbackPage() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedFeedback, setSelectedFeedback] = useState<FeedbackRecord | null>(null);
+
+  const handleRowClick = (feedback: FeedbackRecord) => {
+    setSelectedFeedback(feedback);
+  };
 
   return (
-    <div className="w-full">
+    <div className="w-full relative">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold text-gray-900">Feedback</h1>
         <div className="flex gap-4">
@@ -731,7 +690,7 @@ export default function FeedbackPage() {
         </div>
       </div>
 
-      <div className="border rounded-lg bg-white">
+      <div className={`border rounded-lg bg-white transition-all duration-200 ${selectedFeedback ? 'mr-[600px]' : ''}`}>
         <Table>
           <TableHeader>
             <TableRow className="border-b border-gray-200">
@@ -754,7 +713,11 @@ export default function FeedbackPage() {
           </TableHeader>
           <TableBody>
             {sampleFeedback.map((feedback) => (
-              <TableRow key={feedback.id} className="group hover:bg-gray-50 border-b border-gray-200">
+              <TableRow
+                key={feedback.id}
+                className="group hover:bg-gray-50 border-b border-gray-200 cursor-pointer"
+                onClick={() => handleRowClick(feedback)}
+              >
                 <TableCell className="max-w-[300px]">
                   <p className="text-gray-900 font-medium">{feedback.content}</p>
                   <p className="text-gray-700 text-sm truncate mt-1">{feedback.summary}</p>
@@ -848,6 +811,13 @@ export default function FeedbackPage() {
           </TableBody>
         </Table>
       </div>
+
+      {selectedFeedback && (
+        <FeedbackDetailsPanel
+          feedback={selectedFeedback}
+          onClose={() => setSelectedFeedback(null)}
+        />
+      )}
     </div>
   );
 } 
