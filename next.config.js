@@ -6,6 +6,7 @@ const nextConfig = {
   },
   basePath: process.env.NODE_ENV === 'production' ? '/proj-phx-dev' : '',
   assetPrefix: process.env.NODE_ENV === 'production' ? '/proj-phx-dev/' : '',
+  trailingSlash: true,
 }
 
 module.exports = nextConfig 
