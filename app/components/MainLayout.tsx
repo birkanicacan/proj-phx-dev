@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
 import WelcomeDialog from './WelcomeDialog';
 import IntegrationDialog from './IntegrationDialog';
+import { usePathname } from 'next/navigation';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -13,6 +14,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
   const [showWelcome, setShowWelcome] = useState(false);
   const [showIntegrationDialog, setShowIntegrationDialog] = useState(false);
   const [hasEnabledIntegration, setHasEnabledIntegration] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     // Check if it's the first visit
@@ -39,16 +41,9 @@ export default function MainLayout({ children }: MainLayoutProps) {
     }
   }, []);
 
-  const handleIntegrationEnabled = (integration: string) => {
-    // Get current integrations
-    const enabledIntegrations = JSON.parse(localStorage.getItem('enabledIntegrations') || '[]');
-    
-    // Add the new integration if it's not already there
-    if (!enabledIntegrations.includes(integration)) {
-      enabledIntegrations.push(integration);
-      localStorage.setItem('enabledIntegrations', JSON.stringify(enabledIntegrations));
-      setHasEnabledIntegration(true);
-    }
+  const handleIntegrationEnabled = () => {
+    setHasEnabledIntegration(true);
+    setShowIntegrationDialog(false);
   };
 
   return (
@@ -56,7 +51,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
       <Sidebar />
       <main className="flex-1 overflow-auto">
         <div className="p-8">
-          {!hasEnabledIntegration && (
+          {!hasEnabledIntegration && !['/feedback', '/dashboard/win-loss-q1-25', '/users'].includes(pathname) && (
             <div className="mb-8">
               <div className="bg-white rounded-lg shadow p-6">
                 <h2 className="text-xl font-semibold mb-4">Get Started</h2>

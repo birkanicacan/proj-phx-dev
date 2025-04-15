@@ -61,6 +61,8 @@ const Section = ({ title, items, isExpanded, onToggle, showCreateButton = false 
         router.push(href);
       }
     }
+    // Prevent event propagation for all sections to avoid collapsing when clicking items
+    e.stopPropagation();
   };
 
   return (
@@ -150,18 +152,42 @@ const Section = ({ title, items, isExpanded, onToggle, showCreateButton = false 
 };
 
 export default function Sidebar() {
-  const [expandedSections, setExpandedSections] = useState({
-    pinned: false,
-    records: false,
-    dashboards: false,
-    workflows: false,
+  const [expandedSections, setExpandedSections] = useState<{
+    pinned: boolean;
+    records: boolean;
+    dashboards: boolean;
+    workflows: boolean;
+  }>(() => {
+    // Initialize state from localStorage if available
+    if (typeof window !== 'undefined') {
+      const savedState = localStorage.getItem('sidebarExpandedSections');
+      return savedState ? JSON.parse(savedState) : {
+        pinned: false,
+        records: false,
+        dashboards: false,
+        workflows: false,
+      };
+    }
+    return {
+      pinned: false,
+      records: false,
+      dashboards: false,
+      workflows: false,
+    };
   });
 
   const toggleSection = (section: keyof typeof expandedSections) => {
-    setExpandedSections((prev) => ({
-      ...prev,
-      [section]: !prev[section],
-    }));
+    setExpandedSections((prev: typeof expandedSections) => {
+      const newState = {
+        ...prev,
+        [section]: !prev[section],
+      };
+      // Save to localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('sidebarExpandedSections', JSON.stringify(newState));
+      }
+      return newState;
+    });
   };
 
   const recordsItems = [
