@@ -818,6 +818,9 @@ video {
 .ml-3 {
   margin-left: 0.75rem;
 }
+.mt-3 {
+  margin-top: 0.75rem;
+}
 .line-clamp-2 {
   overflow: hidden;
   display: -webkit-box;
@@ -1184,6 +1187,9 @@ video {
 }
 .whitespace-nowrap {
   white-space: nowrap;
+}
+.whitespace-pre-line {
+  white-space: pre-line;
 }
 .whitespace-pre-wrap {
   white-space: pre-wrap;
@@ -1984,6 +1990,11 @@ body {
 .hover\:text-white:hover {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+}
+ 
+.hover\:text-green-800:hover {
+  --tw-text-opacity: 1;
+  color: rgb(22 101 52 / var(--tw-text-opacity, 1));
 }
  
 .hover\:underline:hover {

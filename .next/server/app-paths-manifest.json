@@ -1,7 +1,7 @@
 {
   "/page": "app/page.js",
   "/search/page": "app/search/page.js",
+  "/inbox/page": "app/inbox/page.js",
   "/home/page": "app/home/page.js",
-  "/taxonomy/page": "app/taxonomy/page.js",
-  "/inbox/page": "app/inbox/page.js"
+  "/taxonomy/page": "app/taxonomy/page.js"
 }
