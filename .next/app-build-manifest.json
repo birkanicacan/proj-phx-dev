@@ -80,6 +80,11 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/users/layout.js"
+    ],
+    "/analyze/insights-from-expansion/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/analyze/insights-from-expansion/page.js"
     ]
   }
 }

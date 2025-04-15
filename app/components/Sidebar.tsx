@@ -23,6 +23,7 @@ import {
   CurrencyDollarIcon,
   ExclamationTriangleIcon,
   StarIcon,
+  ArrowTrendingUpIcon,
 } from '@heroicons/react/24/outline';
 
 interface SectionProps {
@@ -251,7 +252,8 @@ export default function Sidebar() {
           <Section
             title="Pinned"
             items={[
-              { name: 'Win/Loss Analysis Q1\'25', icon: ChartBarIcon, href: '/dashboard/win-loss-q1-25' }
+              { name: 'Win/Loss Analysis Q1\'25', icon: ChartBarIcon, href: '/dashboard/win-loss-q1-25' },
+              { name: 'Insights from expansion', icon: ArrowTrendingUpIcon, href: '/analyze/insights-from-expansion' }
             ]}
             isExpanded={expandedSections.pinned}
             onToggle={() => toggleSection('pinned')}
