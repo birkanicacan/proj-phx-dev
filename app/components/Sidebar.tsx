@@ -194,7 +194,7 @@ export default function Sidebar() {
   const recordsItems = [
     { name: 'Feedback', icon: DocumentTextIcon, href: '/feedback' },
     { name: 'Users', icon: UserIcon, href: '/users' },
-    { name: 'Accounts', icon: BuildingOfficeIcon },
+    { name: 'Accounts', icon: BuildingOfficeIcon, href: '/accounts' },
     { name: 'Opportunities', icon: ChartBarIcon },
     { name: 'Stores', icon: ShoppingBagIcon },
     { name: 'Products', icon: TagIcon },
