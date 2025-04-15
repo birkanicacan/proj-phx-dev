@@ -1,9 +1,1 @@
-{
-  "/page": "app/page.js",
-  "/onboarding/page": "app/onboarding/page.js",
-  "/auth/signup/page": "app/auth/signup/page.js",
-  "/home/page": "app/home/page.js",
-  "/inbox/page": "app/inbox/page.js",
-  "/feedback/page": "app/feedback/page.js",
-  "/agents/page": "app/agents/page.js"
-}
+{}
