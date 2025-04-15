@@ -1,1 +1,14 @@
-{}
+{
+  "/page": "app/page.js",
+  "/auth/signup/page": "app/auth/signup/page.js",
+  "/onboarding/page": "app/onboarding/page.js",
+  "/search/page": "app/search/page.js",
+  "/home/page": "app/home/page.js",
+  "/analyze/insights-from-expansion/page": "app/analyze/insights-from-expansion/page.js",
+  "/analyze/page": "app/analyze/page.js",
+  "/inbox/page": "app/inbox/page.js",
+  "/agents/page": "app/agents/page.js",
+  "/taxonomy/page": "app/taxonomy/page.js",
+  "/dashboard/win-loss-q1-25/page": "app/dashboard/win-loss-q1-25/page.js",
+  "/feedback/page": "app/feedback/page.js"
+}
