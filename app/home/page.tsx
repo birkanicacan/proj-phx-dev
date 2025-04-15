@@ -284,6 +284,12 @@ export default function HomePage() {
         console.error('Error parsing enabled integrations:', e);
       }
     }
+
+    // Get showGetStarted state from localStorage
+    const storedShowGetStarted = localStorage.getItem('showGetStarted');
+    if (storedShowGetStarted !== null) {
+      setShowGetStarted(storedShowGetStarted === 'true');
+    }
   }, []);
 
   // Add a separate useEffect for checking collapsed states
@@ -291,6 +297,7 @@ export default function HomePage() {
     // Check if all steps are collapsed
     if (isStep1Collapsed && isStep2Collapsed && isStep3Collapsed && isStep4Collapsed && isStep5Collapsed) {
       setShowGetStarted(false);
+      localStorage.setItem('showGetStarted', 'false');
     }
   }, [isStep1Collapsed, isStep2Collapsed, isStep3Collapsed, isStep4Collapsed, isStep5Collapsed]);
 
@@ -342,7 +349,10 @@ export default function HomePage() {
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold text-gray-900">Get Started with Enterpret</h2>
               <button 
-                onClick={() => setShowGetStarted(false)}
+                onClick={() => {
+                  setShowGetStarted(false);
+                  localStorage.setItem('showGetStarted', 'false');
+                }}
                 className="text-gray-400 hover:text-gray-600"
               >
                 ×
