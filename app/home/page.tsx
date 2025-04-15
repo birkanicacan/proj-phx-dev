@@ -248,6 +248,10 @@ export default function HomePage() {
   const [showIntegrationDialog, setShowIntegrationDialog] = useState(false);
   const [enabledIntegrations, setEnabledIntegrations] = useState<string[]>([]);
   const [isStep1Collapsed, setIsStep1Collapsed] = useState(false);
+  const [isStep2Collapsed, setIsStep2Collapsed] = useState(false);
+  const [isStep3Collapsed, setIsStep3Collapsed] = useState(false);
+  const [isStep4Collapsed, setIsStep4Collapsed] = useState(false);
+  const [isStep5Collapsed, setIsStep5Collapsed] = useState(false);
   const [wisdomQuery, setWisdomQuery] = useState('');
 
   useEffect(() => {
@@ -388,7 +392,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className={`flex items-start space-x-4 ${!isStep1Collapsed ? 'opacity-50' : ''}`}>
+            <div className={`flex items-start space-x-4 ${isStep2Collapsed ? 'opacity-50' : ''}`} onClick={() => setIsStep2Collapsed(!isStep2Collapsed)}>
               <div className="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                 <span className="text-blue-600 font-semibold">2</span>
               </div>
@@ -398,7 +402,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className={`flex items-start space-x-4 ${!isStep1Collapsed ? 'opacity-50' : ''}`}>
+            <div className={`flex items-start space-x-4 ${isStep3Collapsed ? 'opacity-50' : ''}`} onClick={() => setIsStep3Collapsed(!isStep3Collapsed)}>
               <div className="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                 <span className="text-blue-600 font-semibold">3</span>
               </div>
@@ -408,7 +412,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className={`flex items-start space-x-4 ${!isStep1Collapsed ? 'opacity-50' : ''}`}>
+            <div className={`flex items-start space-x-4 ${isStep4Collapsed ? 'opacity-50' : ''}`} onClick={() => setIsStep4Collapsed(!isStep4Collapsed)}>
               <div className="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                 <span className="text-blue-600 font-semibold">4</span>
               </div>
@@ -418,7 +422,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className={`flex items-start space-x-4 ${!isStep1Collapsed ? 'opacity-50' : ''}`}>
+            <div className={`flex items-start space-x-4 ${isStep5Collapsed ? 'opacity-50' : ''}`} onClick={() => setIsStep5Collapsed(!isStep5Collapsed)}>
               <div className="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                 <span className="text-blue-600 font-semibold">5</span>
               </div>
