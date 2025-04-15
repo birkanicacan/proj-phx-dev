@@ -1,8 +1,7 @@
 {
-  "/page": "app/page.js",
   "/search/page": "app/search/page.js",
+  "/page": "app/page.js",
   "/onboarding/page": "app/onboarding/page.js",
-  "/auth/signup/page": "app/auth/signup/page.js",
-  "/agents/page": "app/agents/page.js",
-  "/home/page": "app/home/page.js"
+  "/home/page": "app/home/page.js",
+  "/taxonomy/page": "app/taxonomy/page.js"
 }

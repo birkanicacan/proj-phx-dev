@@ -22,24 +22,32 @@ const RECENT_SEARCHES = [
 ];
 
 export function RecentSearches() {
+  const recentSearches = [
+    {
+      query: 'Offline mode',
+      timestamp: '2 hours ago',
+    },
+    {
+      query: 'Top feature requests from paid customers',
+      timestamp: '1 day ago',
+    },
+    {
+      query: 'API documentation',
+      timestamp: '3 days ago',
+    },
+  ];
+
   return (
-    <div>
-      <h2 className="text-lg font-medium text-gray-900 mb-4">Recent searches</h2>
+    <div className="space-y-4">
+      <h2 className="text-lg font-semibold text-gray-900">Recent Searches</h2>
       <div className="space-y-2">
-        {RECENT_SEARCHES.map((search) => (
+        {recentSearches.map((search, index) => (
           <button
-            key={search.id}
-            className="flex items-center w-full p-3 text-left hover:bg-gray-50 rounded-lg group transition-colors"
-            onClick={() => {
-              // TODO: Implement recent search click handling
-              console.log('Clicked recent search:', search.query);
-            }}
+            key={index}
+            className="w-full flex items-center justify-between px-4 py-3 rounded-lg border border-gray-200 bg-white hover:border-gray-300 transition-colors"
           >
-            <ClockIcon className="h-5 w-5 text-gray-400 mr-3 flex-shrink-0" />
-            <div className="min-w-0 flex-1">
-              <p className="text-sm text-gray-900 truncate">{search.query}</p>
-              <p className="text-xs text-gray-500">{search.timestamp}</p>
-            </div>
+            <span className="text-gray-900">{search.query}</span>
+            <span className="text-sm text-gray-500">{search.timestamp}</span>
           </button>
         ))}
       </div>

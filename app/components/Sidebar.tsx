@@ -212,10 +212,6 @@ export default function Sidebar() {
 
       {/* Main Navigation */}
       <nav className="flex-1 p-4 space-y-0 bg-white">
-        <Link href="/" className="flex items-center w-full px-2 py-1 text-sm text-gray-900 hover:bg-gray-100 rounded">
-          <HomeIcon className="w-5 h-5 mr-2 text-gray-700" />
-          Home
-        </Link>
         <Link href="/search" className="flex items-center w-full px-2 py-1 text-sm text-gray-900 hover:bg-gray-100 rounded">
           <SearchIcon className="w-5 h-5 mr-2 text-gray-700" />
           Search

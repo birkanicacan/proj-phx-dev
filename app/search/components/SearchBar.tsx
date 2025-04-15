@@ -2,18 +2,19 @@
 
 import { useState } from 'react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { SearchResults } from './SearchResults';
 
 export function SearchBar() {
   const [query, setQuery] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement search functionality
-    console.log('Searching for:', query);
+    setIsSearching(true);
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full">
       <h1 className="text-2xl font-semibold text-gray-900 text-center">How can I help you today?</h1>
       <form onSubmit={handleSearch} className="w-full">
         <div className="relative">
@@ -23,12 +24,20 @@ export function SearchBar() {
           <input
             type="text"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            onChange={(e) => {
+              setQuery(e.target.value);
+              if (e.target.value === '') {
+                setIsSearching(false);
+              }
+            }}
+            className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900"
             placeholder="Search anything..."
           />
         </div>
       </form>
+
+      {/* Search Results */}
+      {isSearching && <SearchResults query={query} />}
     </div>
   );
 } 

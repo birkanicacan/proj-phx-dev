@@ -6,11 +6,11 @@ import { RecentSearches } from './components/RecentSearches';
 export default function SearchPage() {
   return (
     <MainLayout>
-      <div className="flex flex-col justify-center min-h-[calc(100vh-4rem)] max-w-5xl mx-auto px-4 w-full">
-        <div className="space-y-8 -mt-32">
+      <div className="flex flex-col min-h-[calc(100vh-4rem)] max-w-5xl mx-auto px-4 w-full">
+        <div className="space-y-8 py-8">
           {/* Search Bar */}
           <div className="flex justify-center">
-            <div className="w-full max-w-2xl">
+            <div className="w-full max-w-3xl">
               <SearchBar />
             </div>
           </div>
