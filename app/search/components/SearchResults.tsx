@@ -10,7 +10,12 @@ export function SearchResults({ query }: SearchResultsProps) {
   // Check if the query is a natural language question
   const isNaturalLanguageQuery = query.toLowerCase().startsWith('what') || 
     query.toLowerCase().startsWith('how') || 
-    query.toLowerCase().startsWith('why');
+    query.toLowerCase().startsWith('why') ||
+    query.toLowerCase().startsWith('summarize');
+
+  // Check if it's specifically asking for offline mode summary
+  const isOfflineModeSummary = query.toLowerCase().includes('offline mode') && 
+    query.toLowerCase().includes('summarize');
 
   // Mock data for filter chips
   const filterChips = [
@@ -62,6 +67,43 @@ export function SearchResults({ query }: SearchResultsProps) {
    - Templated workflows`,
   };
 
+  // Mock data for offline mode summary
+  const offlineModeSummary = {
+    summary: `Based on recent customer feedback across multiple channels, there is a strong demand for offline mode functionality in the platform. Here's a comprehensive summary:
+
+Key Use Cases:
+1. Field Sales Teams
+   - Frequently visit manufacturing sites with poor connectivity
+   - Currently using paper-based workarounds
+   - Need ability to capture feedback on-site and sync later
+
+2. Research Teams
+   - Operating in remote locations
+   - Collecting customer feedback data in areas without internet
+   - Require reliable data collection capabilities regardless of connectivity
+
+3. Enterprise Requirements
+   - Multiple large enterprises (Tesla, SpaceX, Boeing) have requested this feature
+   - Critical for field operations and data collection
+   - Essential for global teams in various connectivity conditions
+
+Technical Requirements:
+• Local data storage capabilities
+• Robust conflict resolution system
+• Automatic synchronization when connection is restored
+• Mobile app support for field usage
+
+Impact:
+The lack of offline functionality is currently:
+- Reducing field team efficiency
+- Creating data entry duplications
+- Limiting platform usage in key scenarios
+- Affecting potential enterprise adoption
+
+Recommendation:
+Given the consistent feedback and use cases presented, implementing offline mode should be considered a high-priority feature. The functionality would significantly enhance the platform's value proposition for field teams and enterprise customers.`
+  };
+
   if (!query) return null;
 
   return (
@@ -82,7 +124,16 @@ export function SearchResults({ query }: SearchResultsProps) {
       <AskWisdom />
 
       {/* Natural Language Query Result */}
-      {isNaturalLanguageQuery && (
+      {isOfflineModeSummary ? (
+        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+          <h2 className="text-lg font-semibold mb-4 text-gray-900">Feedback Summary</h2>
+          <div className="prose max-w-none">
+            <div className="whitespace-pre-wrap font-sans text-sm text-gray-700">
+              {offlineModeSummary.summary}
+            </div>
+          </div>
+        </div>
+      ) : isNaturalLanguageQuery ? (
         <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
           <h2 className="text-lg font-semibold mb-4">Summary</h2>
           <div className="prose max-w-none">
@@ -91,10 +142,7 @@ export function SearchResults({ query }: SearchResultsProps) {
             </pre>
           </div>
         </div>
-      )}
-
-      {/* Regular Search Results */}
-      {!isNaturalLanguageQuery && (
+      ) : (
         <div className="space-y-4">
           {offlineModeResults.map((result, index) => (
             <SearchResult

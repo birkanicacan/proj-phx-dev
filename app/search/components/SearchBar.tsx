@@ -1,12 +1,23 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { SearchResults } from './SearchResults';
+import { useSearchParams } from 'next/navigation';
 
 export function SearchBar() {
+  const searchParams = useSearchParams();
   const [query, setQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
+
+  useEffect(() => {
+    // Get query from URL parameters
+    const urlQuery = searchParams.get('q');
+    if (urlQuery) {
+      setQuery(decodeURIComponent(urlQuery));
+      setIsSearching(true);
+    }
+  }, [searchParams]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
