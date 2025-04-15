@@ -147,9 +147,17 @@ export default function OnboardingPage() {
   const handleSelection = (option: string) => {
     setSelections(prev => {
       const currentSelections = prev[currentStep] || [];
-      const newSelections = currentSelections.includes(option)
-        ? currentSelections.filter(item => item !== option)
-        : [...currentSelections, option];
+      let newSelections;
+      
+      if (currentStep === 0) {
+        // For work type selection (first step), make it single-select
+        newSelections = [option];
+      } else {
+        // For other steps, keep it multi-select
+        newSelections = currentSelections.includes(option)
+          ? currentSelections.filter(item => item !== option)
+          : [...currentSelections, option];
+      }
       
       return {
         ...prev,
