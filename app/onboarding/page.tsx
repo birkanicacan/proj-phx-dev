@@ -7,6 +7,7 @@ import Image from 'next/image';
 interface PlanFeature {
   free: string | number;
   premium: string | number;
+  enterprise: string | number;
   icon?: string;
 }
 
@@ -93,22 +94,25 @@ const steps: Step[] = [
   },
   {
     title: "Choose your trial",
-    description: "Start with a 14-day premium trial",
+    description: "Start with a 14-day trial",
     type: 'pricing',
     options: {
       "Feedback Records": {
         free: "100 records from each feedback source",
         premium: "1000 records from each feedback source",
+        enterprise: "Custom records limit",
         icon: "📊"
       },
       "Wisdom Credits": {
         free: "10 queries",
         premium: "100 queries",
+        enterprise: "Unlimited queries",
         icon: "🤖"
       },
       "Integrations": {
         free: "Starter integrations including Zendesk, Intercom, Twitter, Reddit, and manual uploads",
         premium: "Starter + Premium integations including Salesforce, Gong, and more",
+        enterprise: "Premium + Enterprise integrations with Qualtrics, Medallia, Salesforce, and more",
         icon: "🔌"
       }
     }
@@ -187,10 +191,10 @@ export default function OnboardingPage() {
     
     return (
       <div className="w-full">
-        <div className="grid grid-cols-2 gap-8">
+        <div className="grid grid-cols-3 gap-8">
           {/* Free Plan */}
-          <div className="bg-[rgb(24,24,24)] p-6 rounded-xl border-2 border-transparent">
-            <h3 className="text-xl font-bold text-white mb-4">Free Trial</h3>
+          <div className="bg-[rgb(24,24,24)] p-8 rounded-xl border-2 border-transparent">
+            <h3 className="text-xl font-bold text-white mb-4">Free</h3>
             <div className="space-y-4">
               {Object.entries(features).map(([name, feature]) => (
                 <div key={name} className="flex items-start space-x-3">
@@ -211,11 +215,11 @@ export default function OnboardingPage() {
           </div>
 
           {/* Premium Plan */}
-          <div className="bg-[rgb(24,24,24)] p-6 rounded-xl border-2 border-purple-500">
+          <div className="bg-[rgb(24,24,24)] p-8 rounded-xl border-2 border-purple-500">
             <div className="bg-purple-500 text-white text-sm font-medium px-3 py-1 rounded-full inline-block mb-4">
               RECOMMENDED
             </div>
-            <h3 className="text-xl font-bold text-white mb-4">Premium Trial</h3>
+            <h3 className="text-xl font-bold text-white mb-4">Premium</h3>
             <div className="space-y-4">
               {Object.entries(features).map(([name, feature]) => (
                 <div key={name} className="flex items-start space-x-3">
@@ -232,6 +236,31 @@ export default function OnboardingPage() {
               className="w-full mt-8 bg-gradient-to-r from-primary to-secondary text-white px-8 py-3 rounded-full hover:opacity-90 transition-opacity font-medium"
             >
               Start Premium Trial
+            </button>
+          </div>
+
+          {/* Enterprise Plan */}
+          <div className="bg-[rgb(24,24,24)] p-8 rounded-xl border-2 border-blue-500">
+            <div className="bg-blue-500 text-white text-sm font-medium px-3 py-1 rounded-full inline-block mb-4">
+              ENTERPRISE
+            </div>
+            <h3 className="text-xl font-bold text-white mb-4">Enterprise</h3>
+            <div className="space-y-4">
+              {Object.entries(features).map(([name, feature]) => (
+                <div key={name} className="flex items-start space-x-3">
+                  {feature.icon && <span className="text-2xl">{feature.icon}</span>}
+                  <div>
+                    <p className="text-white font-medium">{name}</p>
+                    <p className="text-gray-400">{feature.enterprise}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <button
+              onClick={() => window.location.href = 'mailto:sales@enterpret.com'}
+              className="w-full mt-8 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-8 py-3 rounded-full hover:opacity-90 transition-opacity font-medium"
+            >
+              Contact Sales
             </button>
           </div>
         </div>
@@ -324,7 +353,7 @@ export default function OnboardingPage() {
       </nav>
 
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-12">
-        <div className="w-full max-w-2xl">
+        <div className="w-full max-w-5xl">
           <div className="mb-8">
             <div className="flex justify-between mb-2">
               {steps.map((_, index) => (
