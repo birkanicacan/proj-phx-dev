@@ -1,7 +1,5 @@
 {
   "/onboarding/page": "app/onboarding/page.js",
-  "/page": "app/page.js",
-  "/auth/signup/page": "app/auth/signup/page.js",
   "/home/page": "app/home/page.js",
   "/dashboard/win-loss-q1-25/page": "app/dashboard/win-loss-q1-25/page.js",
   "/feedback/page": "app/feedback/page.js",

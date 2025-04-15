@@ -20,6 +20,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { ChevronDown, Filter, Plus, Search } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 // Types for user data
 type UserRole = 'Product Manager' | 'Technical Lead' | 'Operations Manager' | 'IT Director' | 'Data Analyst' | 'Business Analyst' | 'Small Business Owner' | 'Customer Success Manager' | 'Security Engineer' | 'Data Visualization Specialist' | 'Marketing Director';
@@ -242,6 +243,24 @@ const getStatusColor = (status: UserStatus) => {
 
 export default function UsersPage() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [showEnrichDialog, setShowEnrichDialog] = useState(false);
+  const [showProductsColumn, setShowProductsColumn] = useState(false);
+
+  // Sample product names for demonstration
+  const sampleProducts = [
+    'Analytics Dashboard Pro',
+    'Data Insights Suite',
+    'Security Scanner Plus',
+    'Workflow Automator',
+    'Reporting Engine'
+  ];
+
+  // Randomly assign 1-3 products to each user
+  const getRandomProducts = () => {
+    const numProducts = Math.floor(Math.random() * 3) + 1;
+    const shuffled = [...sampleProducts].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, numProducts);
+  };
 
   return (
     <div className="w-full">
@@ -266,10 +285,10 @@ export default function UsersPage() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem className="text-gray-700">Status</DropdownMenuItem>
-              <DropdownMenuItem className="text-gray-700">Role</DropdownMenuItem>
-              <DropdownMenuItem className="text-gray-700">Account Tier</DropdownMenuItem>
-              <DropdownMenuItem className="text-gray-700">Department</DropdownMenuItem>
+              <DropdownMenuItem className="text-gray-900">Status</DropdownMenuItem>
+              <DropdownMenuItem className="text-gray-900">Role</DropdownMenuItem>
+              <DropdownMenuItem className="text-gray-900">Account Tier</DropdownMenuItem>
+              <DropdownMenuItem className="text-gray-900">Department</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
           <Button className="bg-blue-600 text-white hover:bg-blue-700">
@@ -283,16 +302,38 @@ export default function UsersPage() {
         <Table>
           <TableHeader>
             <TableRow className="border-b border-gray-200">
-              <TableHead className="text-gray-900 font-medium">User</TableHead>
-              <TableHead className="text-gray-900 font-medium">Role</TableHead>
-              <TableHead className="text-gray-900 font-medium">Account</TableHead>
-              <TableHead className="text-gray-900 font-medium">Status</TableHead>
-              <TableHead className="text-gray-900 font-medium">Last Active</TableHead>
-              <TableHead className="text-gray-900 font-medium">Feedback Count</TableHead>
-              <TableHead className="text-gray-900 font-medium">Location</TableHead>
-              <TableHead className="text-gray-900 font-medium">Department</TableHead>
-              <TableHead className="text-gray-900 font-medium">Join Date</TableHead>
-              <TableHead className="text-gray-900 font-medium">Tags</TableHead>
+              <TableHead className="text-gray-950 font-medium">User</TableHead>
+              <TableHead className="text-gray-950 font-medium">Role</TableHead>
+              <TableHead className="text-gray-950 font-medium">Account</TableHead>
+              <TableHead className="text-gray-950 font-medium">Status</TableHead>
+              <TableHead className="text-gray-950 font-medium">Last Active</TableHead>
+              <TableHead className="text-gray-950 font-medium">Feedback Count</TableHead>
+              <TableHead className="text-gray-950 font-medium">Location</TableHead>
+              <TableHead className="text-gray-950 font-medium">Department</TableHead>
+              <TableHead className="text-gray-950 font-medium">Join Date</TableHead>
+              <TableHead className="text-gray-950 font-medium">Tags</TableHead>
+              {showProductsColumn && (
+                <TableHead className="text-gray-950 font-medium">Products</TableHead>
+              )}
+              <TableHead>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="h-8 w-full justify-start gap-2 -ml-3 hover:bg-gray-100">
+                      <Plus className="h-4 w-4" />
+                      <span className="text-gray-950">Add column</span>
+                      <ChevronDown className="h-4 w-4 ml-auto" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => setShowProductsColumn(true)} className="text-gray-900">
+                      Relation to other records
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setShowEnrichDialog(true)} className="text-gray-900">
+                      Enrich with custom functions
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -337,11 +378,89 @@ export default function UsersPage() {
                     ))}
                   </div>
                 </TableCell>
+                {showProductsColumn && (
+                  <TableCell>
+                    <div className="flex gap-1 flex-wrap">
+                      {getRandomProducts().map((product) => (
+                        <Badge key={product} variant="secondary" className="text-xs bg-blue-100 text-blue-700">
+                          {product}
+                        </Badge>
+                      ))}
+                    </div>
+                  </TableCell>
+                )}
+                <TableCell />
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </div>
+
+      <Dialog open={showEnrichDialog} onOpenChange={setShowEnrichDialog}>
+        <DialogContent className="sm:max-w-[600px] bg-gray-50">
+          <DialogHeader>
+            <DialogTitle className="text-gray-900">Add enrichment</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="flex flex-col gap-4">
+              <Input placeholder="Search" className="w-full" />
+              <div className="flex gap-2">
+                <Button variant="outline" className="flex-1 text-gray-900">Discover</Button>
+                <Button variant="outline" className="flex-1 text-gray-900">Integrations</Button>
+                <Button variant="outline" className="flex-1 text-gray-900">Templates</Button>
+              </div>
+              <div className="space-y-4">
+                <div className="border rounded-lg p-4 bg-white">
+                  <h3 className="font-medium mb-2 text-gray-900">Person info</h3>
+                  <div className="space-y-2">
+                    <div className="flex items-center p-2 hover:bg-gray-50 rounded">
+                      <div className="flex items-center gap-2">
+                        <div className="p-1 bg-gray-100 rounded">👤</div>
+                        <span className="text-gray-900">Enrich Person</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center p-2 hover:bg-gray-50 rounded">
+                      <div className="flex items-center gap-2">
+                        <div className="p-1 bg-gray-100 rounded">🏢</div>
+                        <span className="text-gray-900">Current Company</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="border rounded-lg p-4 bg-white">
+                  <h3 className="font-medium mb-2 text-gray-900">Tools</h3>
+                  <div className="space-y-2">
+                    <div className="flex items-center p-2 hover:bg-gray-50 rounded">
+                      <div className="flex items-center gap-2">
+                        <div className="p-1 bg-gray-100 rounded">🔍</div>
+                        <span className="text-gray-900">Perform Search</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center p-2 hover:bg-gray-50 rounded">
+                      <div className="flex items-center gap-2">
+                        <div className="p-1 bg-gray-100 rounded">🌐</div>
+                        <span className="text-gray-900">Scrape Website</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center p-2 hover:bg-gray-50 rounded">
+                      <div className="flex items-center gap-2">
+                        <div className="p-1 bg-gray-100 rounded">🤖</div>
+                        <span className="text-gray-900">Use AI</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center p-2 hover:bg-gray-50 rounded">
+                      <div className="flex items-center gap-2">
+                        <div className="p-1 bg-gray-100 rounded">🔗</div>
+                        <span className="text-gray-900">HTTP API</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 } 
