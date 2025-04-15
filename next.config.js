@@ -4,8 +4,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  basePath: process.env.NODE_ENV === 'production' ? '/proj-phx-dev' : '',
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/proj-phx-dev/' : '',
+  basePath: '/proj-phx-dev',
+  assetPrefix: '/proj-phx-dev/',
   trailingSlash: true,
 }
 
