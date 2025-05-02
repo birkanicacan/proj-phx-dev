@@ -496,6 +496,7 @@ export default function InsightsPage() {
   const [showIssueDialog, setShowIssueDialog] = useState(false);
   const [selectedIntegration, setSelectedIntegration] = useState<'linear' | 'jira' | null>(null);
   const [selectedInsightForIssue, setSelectedInsightForIssue] = useState<InsightRecord | null>(null);
+  const [linearIssues, setLinearIssues] = useState<Record<string, { id: string; title: string; status: string }>>({});
 
   const handleRowClick = (insight: InsightRecord) => {
     setSelectedInsight(insight);
@@ -515,6 +516,23 @@ export default function InsightsPage() {
     setSelectedIntegration(integration);
     setShowIssueDialog(true);
   };
+
+  const handleSuggestedIssueClick = (issue: { id: string; title: string; status: string }) => {
+    if (selectedInsightForIssue) {
+      setLinearIssues(prev => ({
+        ...prev,
+        [selectedInsightForIssue.id]: issue
+      }));
+    }
+    setShowIssueDialog(false);
+  };
+
+  // Sample suggested issues
+  const suggestedIssues = [
+    { id: 'UI-123', title: 'Implement dark mode', status: 'In Progress' },
+    { id: 'UI-456', title: 'Improve mobile performance', status: 'Backlog' },
+    { id: 'FEAT-789', title: 'Add analytics dashboard', status: 'Planned' }
+  ];
 
   const filteredInsights = sampleInsights.filter(insight =>
     insight.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -615,10 +633,17 @@ export default function InsightsPage() {
                     className="text-gray-900 cursor-pointer hover:bg-gray-100"
                     onClick={() => handleIssueCellClick(insight, 'linear')}
                   >
-                    <Button variant="ghost" className="h-8 w-full justify-start gap-2">
-                      <Plus className="h-4 w-4" />
-                      <span className="text-gray-950">Add Linear issue</span>
-                    </Button>
+                    {linearIssues[insight.id] ? (
+                      <div className="flex flex-col">
+                        <span className="text-gray-900 font-medium">{linearIssues[insight.id].title}</span>
+                        <span className="text-gray-500 text-sm">{linearIssues[insight.id].id} • {linearIssues[insight.id].status}</span>
+                      </div>
+                    ) : (
+                      <Button variant="ghost" className="h-8 w-full justify-start gap-2">
+                        <Plus className="h-4 w-4" />
+                        <span className="text-gray-950">Add Linear issue</span>
+                      </Button>
+                    )}
                   </TableCell>
                 )}
                 {showJiraColumn && (
@@ -771,24 +796,18 @@ export default function InsightsPage() {
               <div className="border rounded-lg p-4 bg-white">
                 <h3 className="font-medium mb-2 text-gray-900">Suggested issues</h3>
                 <div className="space-y-2">
-                  <div className="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer">
-                    <div className="flex flex-col">
-                      <span className="text-gray-900 font-medium">Implement dark mode</span>
-                      <span className="text-gray-500 text-sm">UI-123 • In Progress</span>
+                  {suggestedIssues.map((issue) => (
+                    <div 
+                      key={issue.id}
+                      className="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer"
+                      onClick={() => handleSuggestedIssueClick(issue)}
+                    >
+                      <div className="flex flex-col">
+                        <span className="text-gray-900 font-medium">{issue.title}</span>
+                        <span className="text-gray-500 text-sm">{issue.id} • {issue.status}</span>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer">
-                    <div className="flex flex-col">
-                      <span className="text-gray-900 font-medium">Improve mobile performance</span>
-                      <span className="text-gray-500 text-sm">UI-456 • Backlog</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer">
-                    <div className="flex flex-col">
-                      <span className="text-gray-900 font-medium">Add analytics dashboard</span>
-                      <span className="text-gray-500 text-sm">FEAT-789 • Planned</span>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>
