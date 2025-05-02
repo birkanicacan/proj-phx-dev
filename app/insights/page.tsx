@@ -490,9 +490,30 @@ export default function InsightsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedInsight, setSelectedInsight] = useState<InsightRecord | null>(null);
   const [showEnrichDialog, setShowEnrichDialog] = useState(false);
+  const [activeTab, setActiveTab] = useState<'discover' | 'integrations' | 'templates'>('discover');
+  const [showLinearColumn, setShowLinearColumn] = useState(false);
+  const [showJiraColumn, setShowJiraColumn] = useState(false);
+  const [showIssueDialog, setShowIssueDialog] = useState(false);
+  const [selectedIntegration, setSelectedIntegration] = useState<'linear' | 'jira' | null>(null);
+  const [selectedInsightForIssue, setSelectedInsightForIssue] = useState<InsightRecord | null>(null);
 
   const handleRowClick = (insight: InsightRecord) => {
     setSelectedInsight(insight);
+  };
+
+  const handleIntegrationClick = (integration: 'linear' | 'jira') => {
+    if (integration === 'linear') {
+      setShowLinearColumn(true);
+    } else {
+      setShowJiraColumn(true);
+    }
+    setShowEnrichDialog(false);
+  };
+
+  const handleIssueCellClick = (insight: InsightRecord, integration: 'linear' | 'jira') => {
+    setSelectedInsightForIssue(insight);
+    setSelectedIntegration(integration);
+    setShowIssueDialog(true);
   };
 
   const filteredInsights = sampleInsights.filter(insight =>
@@ -536,6 +557,12 @@ export default function InsightsPage() {
               <TableHead className="text-gray-950 font-medium">Affected Accounts</TableHead>
               <TableHead className="text-gray-950 font-medium">Revenue Impact</TableHead>
               <TableHead className="text-gray-950 font-medium">Date Generated</TableHead>
+              {showLinearColumn && (
+                <TableHead className="text-gray-950 font-medium">Linear Issue</TableHead>
+              )}
+              {showJiraColumn && (
+                <TableHead className="text-gray-950 font-medium">Jira Issue</TableHead>
+              )}
               <TableHead>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -583,6 +610,28 @@ export default function InsightsPage() {
                 <TableCell className="text-gray-900">{insight.affectedAccounts}</TableCell>
                 <TableCell className="text-gray-900">{insight.revenueImpact}</TableCell>
                 <TableCell className="text-gray-900">{insight.dateGenerated}</TableCell>
+                {showLinearColumn && (
+                  <TableCell 
+                    className="text-gray-900 cursor-pointer hover:bg-gray-100"
+                    onClick={() => handleIssueCellClick(insight, 'linear')}
+                  >
+                    <Button variant="ghost" className="h-8 w-full justify-start gap-2">
+                      <Plus className="h-4 w-4" />
+                      <span className="text-gray-950">Add Linear issue</span>
+                    </Button>
+                  </TableCell>
+                )}
+                {showJiraColumn && (
+                  <TableCell 
+                    className="text-gray-900 cursor-pointer hover:bg-gray-100"
+                    onClick={() => handleIssueCellClick(insight, 'jira')}
+                  >
+                    <Button variant="ghost" className="h-8 w-full justify-start gap-2">
+                      <Plus className="h-4 w-4" />
+                      <span className="text-gray-950">Add Jira issue</span>
+                    </Button>
+                  </TableCell>
+                )}
                 <TableCell />
               </TableRow>
             ))}
@@ -599,48 +648,145 @@ export default function InsightsPage() {
             <div className="flex flex-col gap-4">
               <Input placeholder="Search" className="w-full" />
               <div className="flex gap-2">
-                <Button variant="outline" className="flex-1 text-gray-900">Discover</Button>
-                <Button variant="outline" className="flex-1 text-gray-900">Integrations</Button>
-                <Button variant="outline" className="flex-1 text-gray-900">Templates</Button>
+                <Button 
+                  variant={activeTab === 'discover' ? 'default' : 'outline'} 
+                  className="flex-1 text-gray-900"
+                  onClick={() => setActiveTab('discover')}
+                >
+                  Discover
+                </Button>
+                <Button 
+                  variant={activeTab === 'integrations' ? 'default' : 'outline'} 
+                  className="flex-1 text-gray-900"
+                  onClick={() => setActiveTab('integrations')}
+                >
+                  Integrations
+                </Button>
+                <Button 
+                  variant={activeTab === 'templates' ? 'default' : 'outline'} 
+                  className="flex-1 text-gray-900"
+                  onClick={() => setActiveTab('templates')}
+                >
+                  Templates
+                </Button>
               </div>
-              <div className="space-y-4">
-                <div className="border rounded-lg p-4 bg-white">
-                  <h3 className="font-medium mb-2 text-gray-900">Insight info</h3>
-                  <div className="space-y-2">
-                    <div className="flex items-center p-2 hover:bg-gray-50 rounded">
-                      <div className="flex items-center gap-2">
-                        <div className="p-1 bg-gray-100 rounded">📊</div>
-                        <span className="text-gray-900">Enrich with Analytics</span>
+              {activeTab === 'integrations' && (
+                <div className="space-y-4">
+                  <div className="border rounded-lg p-4 bg-white">
+                    <h3 className="font-medium mb-2 text-gray-900">Issue Trackers</h3>
+                    <div className="space-y-2">
+                      <div 
+                        className="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer"
+                        onClick={() => handleIntegrationClick('linear')}
+                      >
+                        <div className="flex items-center gap-2">
+                          <div className="p-1 bg-gray-100 rounded">📋</div>
+                          <span className="text-gray-900">Linear</span>
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex items-center p-2 hover:bg-gray-50 rounded">
-                      <div className="flex items-center gap-2">
-                        <div className="p-1 bg-gray-100 rounded">🔍</div>
-                        <span className="text-gray-900">Related Insights</span>
+                      <div 
+                        className="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer"
+                        onClick={() => handleIntegrationClick('jira')}
+                      >
+                        <div className="flex items-center gap-2">
+                          <div className="p-1 bg-gray-100 rounded">📋</div>
+                          <span className="text-gray-900">Jira</span>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className="border rounded-lg p-4 bg-white">
-                  <h3 className="font-medium mb-2 text-gray-900">Tools</h3>
-                  <div className="space-y-2">
-                    <div className="flex items-center p-2 hover:bg-gray-50 rounded">
-                      <div className="flex items-center gap-2">
-                        <div className="p-1 bg-gray-100 rounded">🔍</div>
-                        <span className="text-gray-900">Perform Search</span>
+              )}
+              {activeTab === 'discover' && (
+                <div className="space-y-4">
+                  <div className="border rounded-lg p-4 bg-white">
+                    <h3 className="font-medium mb-2 text-gray-900">Insight info</h3>
+                    <div className="space-y-2">
+                      <div className="flex items-center p-2 hover:bg-gray-50 rounded">
+                        <div className="flex items-center gap-2">
+                          <div className="p-1 bg-gray-100 rounded">📊</div>
+                          <span className="text-gray-900">Enrich with Analytics</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center p-2 hover:bg-gray-50 rounded">
+                        <div className="flex items-center gap-2">
+                          <div className="p-1 bg-gray-100 rounded">🔍</div>
+                          <span className="text-gray-900">Related Insights</span>
+                        </div>
                       </div>
                     </div>
-                    <div className="flex items-center p-2 hover:bg-gray-50 rounded">
-                      <div className="flex items-center gap-2">
-                        <div className="p-1 bg-gray-100 rounded">🤖</div>
-                        <span className="text-gray-900">Use AI</span>
+                  </div>
+                  <div className="border rounded-lg p-4 bg-white">
+                    <h3 className="font-medium mb-2 text-gray-900">Tools</h3>
+                    <div className="space-y-2">
+                      <div className="flex items-center p-2 hover:bg-gray-50 rounded">
+                        <div className="flex items-center gap-2">
+                          <div className="p-1 bg-gray-100 rounded">🔍</div>
+                          <span className="text-gray-900">Perform Search</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center p-2 hover:bg-gray-50 rounded">
+                        <div className="flex items-center gap-2">
+                          <div className="p-1 bg-gray-100 rounded">🤖</div>
+                          <span className="text-gray-900">Use AI</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center p-2 hover:bg-gray-50 rounded">
+                        <div className="flex items-center gap-2">
+                          <div className="p-1 bg-gray-100 rounded">🔗</div>
+                          <span className="text-gray-900">HTTP API</span>
+                        </div>
                       </div>
                     </div>
-                    <div className="flex items-center p-2 hover:bg-gray-50 rounded">
-                      <div className="flex items-center gap-2">
-                        <div className="p-1 bg-gray-100 rounded">🔗</div>
-                        <span className="text-gray-900">HTTP API</span>
-                      </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showIssueDialog} onOpenChange={setShowIssueDialog}>
+        <DialogContent className="sm:max-w-[600px] bg-gray-50">
+          <DialogHeader>
+            <DialogTitle className="text-gray-900">
+              {selectedIntegration === 'linear' ? 'Linear' : 'Jira'} Issue
+            </DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="flex flex-col gap-4">
+              <div className="flex gap-4">
+                <div className="relative flex-1">
+                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
+                  <Input
+                    placeholder="Search issues..."
+                    className="pl-8 w-full bg-white text-gray-900 placeholder:text-gray-500"
+                  />
+                </div>
+                <Button className="bg-blue-600 text-white hover:bg-blue-700">
+                  <Plus className="h-4 w-4 mr-2" />
+                  + New issue
+                </Button>
+              </div>
+              <div className="border rounded-lg p-4 bg-white">
+                <h3 className="font-medium mb-2 text-gray-900">Suggested issues</h3>
+                <div className="space-y-2">
+                  <div className="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer">
+                    <div className="flex flex-col">
+                      <span className="text-gray-900 font-medium">Implement dark mode</span>
+                      <span className="text-gray-500 text-sm">UI-123 • In Progress</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer">
+                    <div className="flex flex-col">
+                      <span className="text-gray-900 font-medium">Improve mobile performance</span>
+                      <span className="text-gray-500 text-sm">UI-456 • Backlog</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer">
+                    <div className="flex flex-col">
+                      <span className="text-gray-900 font-medium">Add analytics dashboard</span>
+                      <span className="text-gray-500 text-sm">FEAT-789 • Planned</span>
                     </div>
                   </div>
                 </div>
