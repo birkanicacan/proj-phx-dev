@@ -193,6 +193,7 @@ export default function Sidebar() {
 
   const recordsItems = [
     { name: 'Feedback', icon: DocumentTextIcon, href: '/feedback' },
+    { name: 'Insights', icon: ChartBarIcon, href: '/insights' },
     { name: 'Users', icon: UserIcon, href: '/users' },
     { name: 'Accounts', icon: BuildingOfficeIcon, href: '/accounts' },
     { name: 'Opportunities', icon: ChartBarIcon },

@@ -1,5 +1,8 @@
 {
+  "/page": "app/page.js",
   "/onboarding/page": "app/onboarding/page.js",
   "/home/page": "app/home/page.js",
+  "/feedback/page": "app/feedback/page.js",
+  "/insights/page": "app/insights/page.js",
   "/users/page": "app/users/page.js"
 }
