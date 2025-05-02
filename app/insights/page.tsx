@@ -20,6 +20,12 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { ChevronDown, Filter, Plus, Search } from 'lucide-react';
 import { InsightRecord, InsightStatus, InsightPriority, InsightSentiment, InsightCategory } from '../types/insights';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 // Sample data
 const sampleInsights: InsightRecord[] = [
@@ -483,6 +489,7 @@ const getCategoryColor = (category: InsightCategory) => {
 export default function InsightsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedInsight, setSelectedInsight] = useState<InsightRecord | null>(null);
+  const [showEnrichDialog, setShowEnrichDialog] = useState(false);
 
   const handleRowClick = (insight: InsightRecord) => {
     setSelectedInsight(insight);
@@ -529,6 +536,22 @@ export default function InsightsPage() {
               <TableHead className="text-gray-950 font-medium">Affected Accounts</TableHead>
               <TableHead className="text-gray-950 font-medium">Revenue Impact</TableHead>
               <TableHead className="text-gray-950 font-medium">Date Generated</TableHead>
+              <TableHead>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="h-8 w-full justify-start gap-2 -ml-3 hover:bg-gray-100">
+                      <Plus className="h-4 w-4" />
+                      <span className="text-gray-950">Add column</span>
+                      <ChevronDown className="h-4 w-4 ml-auto" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => setShowEnrichDialog(true)} className="text-gray-900">
+                      Enrich with custom functions
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -560,11 +583,72 @@ export default function InsightsPage() {
                 <TableCell className="text-gray-900">{insight.affectedAccounts}</TableCell>
                 <TableCell className="text-gray-900">{insight.revenueImpact}</TableCell>
                 <TableCell className="text-gray-900">{insight.dateGenerated}</TableCell>
+                <TableCell />
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </div>
+
+      <Dialog open={showEnrichDialog} onOpenChange={setShowEnrichDialog}>
+        <DialogContent className="sm:max-w-[600px] bg-gray-50">
+          <DialogHeader>
+            <DialogTitle className="text-gray-900">Add enrichment</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="flex flex-col gap-4">
+              <Input placeholder="Search" className="w-full" />
+              <div className="flex gap-2">
+                <Button variant="outline" className="flex-1 text-gray-900">Discover</Button>
+                <Button variant="outline" className="flex-1 text-gray-900">Integrations</Button>
+                <Button variant="outline" className="flex-1 text-gray-900">Templates</Button>
+              </div>
+              <div className="space-y-4">
+                <div className="border rounded-lg p-4 bg-white">
+                  <h3 className="font-medium mb-2 text-gray-900">Insight info</h3>
+                  <div className="space-y-2">
+                    <div className="flex items-center p-2 hover:bg-gray-50 rounded">
+                      <div className="flex items-center gap-2">
+                        <div className="p-1 bg-gray-100 rounded">📊</div>
+                        <span className="text-gray-900">Enrich with Analytics</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center p-2 hover:bg-gray-50 rounded">
+                      <div className="flex items-center gap-2">
+                        <div className="p-1 bg-gray-100 rounded">🔍</div>
+                        <span className="text-gray-900">Related Insights</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="border rounded-lg p-4 bg-white">
+                  <h3 className="font-medium mb-2 text-gray-900">Tools</h3>
+                  <div className="space-y-2">
+                    <div className="flex items-center p-2 hover:bg-gray-50 rounded">
+                      <div className="flex items-center gap-2">
+                        <div className="p-1 bg-gray-100 rounded">🔍</div>
+                        <span className="text-gray-900">Perform Search</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center p-2 hover:bg-gray-50 rounded">
+                      <div className="flex items-center gap-2">
+                        <div className="p-1 bg-gray-100 rounded">🤖</div>
+                        <span className="text-gray-900">Use AI</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center p-2 hover:bg-gray-50 rounded">
+                      <div className="flex items-center gap-2">
+                        <div className="p-1 bg-gray-100 rounded">🔗</div>
+                        <span className="text-gray-900">HTTP API</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 } 
