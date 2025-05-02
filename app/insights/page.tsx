@@ -484,81 +484,57 @@ export default function InsightsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedInsight, setSelectedInsight] = useState<InsightRecord | null>(null);
 
+  const handleRowClick = (insight: InsightRecord) => {
+    setSelectedInsight(insight);
+  };
+
   const filteredInsights = sampleInsights.filter(insight =>
     insight.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     insight.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
     insight.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
-  const handleRowClick = (insight: InsightRecord) => {
-    setSelectedInsight(insight);
-  };
-
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900">Insights</h1>
-        <div className="flex gap-2">
-          <Button variant="outline">
-            <Filter className="mr-2 h-4 w-4" />
+    <div className="w-full relative">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-semibold text-gray-900">Insights</h1>
+        <div className="flex gap-4">
+          <div className="relative">
+            <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
+            <Input
+              placeholder="Search insights..."
+              className="pl-8 w-[300px] bg-white text-gray-900 placeholder:text-gray-500"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <Button variant="outline" className="gap-2 bg-white text-gray-700">
+            <Filter className="h-4 w-4" />
             Filter
           </Button>
-          <Button>
-            <Plus className="mr-2 h-4 w-4" />
-            New Insight
-          </Button>
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
-        <div className="relative flex-1">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
-          <Input
-            placeholder="Search insights..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-8 text-gray-900"
-          />
-        </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="text-gray-900">
-              Sort by <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem className="text-gray-900">Date Generated</DropdownMenuItem>
-            <DropdownMenuItem className="text-gray-900">Priority</DropdownMenuItem>
-            <DropdownMenuItem className="text-gray-900">Feedback Count</DropdownMenuItem>
-            <DropdownMenuItem className="text-gray-900">Revenue Impact</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-
-      <div className="rounded-md border bg-white">
+      <div className="border rounded-lg bg-white">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead className="text-gray-900">Title</TableHead>
-              <TableHead className="text-gray-900">Status</TableHead>
-              <TableHead className="text-gray-900">Category</TableHead>
-              <TableHead className="text-gray-900">Priority</TableHead>
-              <TableHead className="text-gray-900">Sentiment</TableHead>
-              <TableHead className="text-gray-900">Feedback Count</TableHead>
-              <TableHead className="text-gray-900">Affected Users</TableHead>
-              <TableHead className="text-gray-900">Affected Accounts</TableHead>
-              <TableHead className="text-gray-900">Revenue Impact</TableHead>
-              <TableHead className="text-gray-900">Date Generated</TableHead>
+            <TableRow className="border-b border-gray-200">
+              <TableHead className="text-gray-950 font-medium">Title</TableHead>
+              <TableHead className="text-gray-950 font-medium">Status</TableHead>
+              <TableHead className="text-gray-950 font-medium">Category</TableHead>
+              <TableHead className="text-gray-950 font-medium">Priority</TableHead>
+              <TableHead className="text-gray-950 font-medium">Sentiment</TableHead>
+              <TableHead className="text-gray-950 font-medium">Feedback Count</TableHead>
+              <TableHead className="text-gray-950 font-medium">Affected Users</TableHead>
+              <TableHead className="text-gray-950 font-medium">Affected Accounts</TableHead>
+              <TableHead className="text-gray-950 font-medium">Revenue Impact</TableHead>
+              <TableHead className="text-gray-950 font-medium">Date Generated</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredInsights.map((insight) => (
-              <TableRow
-                key={insight.id}
-                className="cursor-pointer hover:bg-gray-50"
-                onClick={() => handleRowClick(insight)}
-              >
-                <TableCell className="font-medium text-gray-900">{insight.title}</TableCell>
+              <TableRow key={insight.id} className="group hover:bg-gray-50 border-b border-gray-200">
+                <TableCell className="text-gray-900 font-medium">{insight.title}</TableCell>
                 <TableCell>
                   <Badge className={getStatusColor(insight.status)}>
                     {insight.status}
