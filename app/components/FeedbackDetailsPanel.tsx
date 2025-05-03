@@ -154,6 +154,32 @@ export default function FeedbackDetailsPanel({ feedback, onClose }: FeedbackDeta
             </div>
           )}
 
+          {/* Linear Issue Section */}
+          {feedback.linearIssue && (
+            <div>
+              <label className="text-sm font-medium text-gray-500">Linear Issue</label>
+              <div className="mt-2 p-4 bg-gray-50 rounded-lg">
+                <div className="space-y-2">
+                  <div className="font-medium text-gray-900">{feedback.linearIssue.title}</div>
+                  <div className="flex items-center gap-2">
+                    <Badge className="bg-blue-100 text-blue-800">{feedback.linearIssue.id}</Badge>
+                    <Badge className="bg-gray-100 text-gray-800">{feedback.linearIssue.status}</Badge>
+                  </div>
+                  {feedback.linearIssue.url && (
+                    <a 
+                      href={feedback.linearIssue.url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
+                    >
+                      View in Linear
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Assigned To Section */}
           {feedback.assignedTo && (
             <div>

@@ -35,6 +35,13 @@ export interface FeedbackProduct {
   category: string;
 }
 
+export interface LinearIssue {
+  id: string;
+  title: string;
+  status: string;
+  url?: string;
+}
+
 export interface FeedbackRecord {
   id: string;
   source: FeedbackSource;
@@ -55,4 +62,5 @@ export interface FeedbackRecord {
   opportunity?: FeedbackOpportunity;
   store?: FeedbackStore;
   product?: FeedbackProduct;
+  linearIssue?: LinearIssue;
 } 

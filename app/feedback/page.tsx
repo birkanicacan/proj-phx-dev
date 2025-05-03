@@ -65,6 +65,12 @@ const sampleFeedback: FeedbackRecord[] = [
       id: 'P202',
       name: 'Analytics Suite',
       category: 'Business Intelligence'
+    },
+    linearIssue: {
+      id: 'UI-123',
+      title: 'Implement dark mode',
+      status: 'In Progress',
+      url: 'https://linear.app/team/project/UI-123'
     }
   },
   {
