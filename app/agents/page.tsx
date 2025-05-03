@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { ChevronDown, Plus } from 'lucide-react';
 import {
@@ -9,12 +9,18 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useRouter } from 'next/navigation';
 
 interface AgentTile {
   id: string;
   name: string;
   description: string;
   type: string;
+}
+
+interface ActiveAgent extends AgentTile {
+  createdBy: string;
+  lastUpdated: string;
 }
 
 const agentTiles: AgentTile[] = [
@@ -38,27 +44,52 @@ const agentTiles: AgentTile[] = [
   }
 ];
 
+const defaultActiveAgents: ActiveAgent[] = [
+  {
+    id: '4',
+    name: 'Complaints by customers',
+    description: 'Monitor and track customer complaints across all channels',
+    type: 'Quality Monitor',
+    createdBy: 'Vivek Kaushal',
+    lastUpdated: 'Apr 08, 2025'
+  },
+  {
+    id: '5',
+    name: 'Quality Monitor -- Wisdom',
+    description: 'AI-powered quality monitoring system',
+    type: 'Quality Monitor',
+    createdBy: 'Vivek Kaushal',
+    lastUpdated: 'Apr 08, 2025'
+  },
+  {
+    id: '6',
+    name: 'Overall Quality Monitor',
+    description: 'Comprehensive quality monitoring dashboard',
+    type: 'Quality Monitor',
+    createdBy: 'Vivek Kaushal',
+    lastUpdated: 'Apr 08, 2025'
+  }
+];
+
 export default function AgentsPage() {
-  const [activeAgents] = useState<AgentTile[]>([
-    {
-      id: '4',
-      name: 'Complaints by customers',
-      description: 'Monitor and track customer complaints across all channels',
-      type: 'Quality Monitor'
-    },
-    {
-      id: '5',
-      name: 'Quality Monitor -- Wisdom',
-      description: 'AI-powered quality monitoring system',
-      type: 'Quality Monitor'
-    },
-    {
-      id: '6',
-      name: 'Overall Quality Monitor',
-      description: 'Comprehensive quality monitoring dashboard',
-      type: 'Quality Monitor'
+  const router = useRouter();
+  const [activeAgents, setActiveAgents] = useState<ActiveAgent[]>(defaultActiveAgents);
+
+  // Load agents from localStorage on component mount
+  useEffect(() => {
+    try {
+      // Check if running in browser environment (for Next.js)
+      if (typeof window !== 'undefined') {
+        const storedAgentsJSON = localStorage.getItem('activeAgents');
+        if (storedAgentsJSON) {
+          const storedAgents = JSON.parse(storedAgentsJSON);
+          setActiveAgents([...defaultActiveAgents, ...storedAgents]);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading agents from localStorage:', error);
     }
-  ]);
+  }, []);
 
   return (
     <div className="p-6">
@@ -83,6 +114,11 @@ export default function AgentsPage() {
             <div
               key={tile.id}
               className="bg-white p-6 rounded-lg border border-gray-200 hover:border-purple-500 cursor-pointer transition-all"
+              onClick={() => {
+                if (tile.name === 'Quality Monitor') {
+                  router.push('/agents/quality-monitor/new');
+                }
+              }}
             >
               <div className="flex items-start gap-4">
                 <div className="flex-shrink-0">
@@ -101,7 +137,7 @@ export default function AgentsPage() {
       </div>
 
       <div>
-        <h2 className="text-xl font-semibold text-gray-950 mb-4">Active Agents (3)</h2>
+        <h2 className="text-xl font-semibold text-gray-950 mb-4">Active Agents ({activeAgents.length})</h2>
         <div className="bg-white rounded-lg border border-gray-200">
           <div className="grid grid-cols-4 gap-4 p-4 border-b border-gray-200 bg-gray-50">
             <div className="text-sm font-medium text-gray-500">Name</div>
@@ -112,8 +148,8 @@ export default function AgentsPage() {
           {activeAgents.map((agent) => (
             <div key={agent.id} className="grid grid-cols-4 gap-4 p-4 border-b border-gray-200 last:border-0">
               <div className="text-gray-900">{agent.name}</div>
-              <div className="text-gray-900">Vivek Kaushal</div>
-              <div className="text-gray-900">Apr 08, 2025</div>
+              <div className="text-gray-900">{agent.createdBy}</div>
+              <div className="text-gray-900">{agent.lastUpdated}</div>
               <div>
                 <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
                   {agent.type}
