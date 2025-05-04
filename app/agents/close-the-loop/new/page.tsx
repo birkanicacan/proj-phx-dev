@@ -378,8 +378,8 @@ The Product Team`;
               
               <div>
                 <Label className="block text-sm font-medium text-gray-800 mb-2">Message preview</Label>
-                <div className="p-4 bg-gray-50 border border-gray-200 rounded max-h-60 overflow-y-auto">
-                  <div className="text-sm whitespace-pre-wrap">{messagePreview}</div>
+                <div className="p-4 bg-gray-50 border border-gray-300 rounded max-h-60 overflow-y-auto">
+                  <div className="text-sm text-gray-900 whitespace-pre-wrap">{messagePreview}</div>
                 </div>
               </div>
             </div>
