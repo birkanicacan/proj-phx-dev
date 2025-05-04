@@ -1,5 +1,6 @@
 {
   "/onboarding/page": "app/onboarding/page.js",
-  "/agents/page": "app/agents/page.js",
-  "/agents/close-the-loop/new/page": "app/agents/close-the-loop/new/page.js"
+  "/agents/close-the-loop/new/page": "app/agents/close-the-loop/new/page.js",
+  "/home/page": "app/home/page.js",
+  "/agents/page": "app/agents/page.js"
 }

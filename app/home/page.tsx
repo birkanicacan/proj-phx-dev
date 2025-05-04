@@ -21,6 +21,8 @@ import { Pie, Line, Bar } from 'react-chartjs-2';
 import 'chartjs-adapter-date-fns';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { SparklesIcon, ExclamationTriangleIcon, ChatBubbleBottomCenterTextIcon, PlusIcon, QueueListIcon } from '@heroicons/react/24/outline';
+import Feed from '../components/Feed';
+import { InsightData } from '../components/FeedItem';
 
 // Register ChartJS components
 ChartJS.register(
@@ -241,6 +243,157 @@ topIssuesData.datasets[0].data = sortedIssues.data;
 
 topRequestsData.labels = sortedRequests.labels;
 topRequestsData.datasets[0].data = sortedRequests.data;
+
+// Sample data for insights in the feed
+const sampleInsights: InsightData[] = [
+  {
+    id: '1',
+    title: 'Performance issues trending upward',
+    content: 'We\'ve observed a 24% increase in performance-related complaints over the past month, primarily from enterprise customers using the dashboard feature.',
+    timestamp: '2 hours ago',
+    source: 'Zendesk',
+    category: 'Issue',
+    chartType: 'line',
+    chartData: {
+      labels: ['Feb', 'Mar', 'Apr', 'May'],
+      datasets: [
+        {
+          label: 'Performance Issues',
+          data: [12, 15, 22, 28],
+          borderColor: 'rgba(255, 99, 132, 1)',
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          fill: true,
+          tension: 0.3
+        },
+      ],
+    },
+    chartOptions: {
+      scales: {
+        y: {
+          beginAtZero: true,
+          suggestedMax: 35,
+          ticks: {
+            stepSize: 10
+          }
+        },
+        x: {
+          grid: {
+            display: false
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          enabled: true,
+          mode: 'index',
+          intersect: false
+        }
+      }
+    }
+  },
+  {
+    id: '2',
+    title: 'Mobile app feature requests growing',
+    content: 'Customers are increasingly requesting dark mode and offline capabilities for the mobile application, with 35% of all feature requests now focused on mobile.',
+    timestamp: '5 hours ago',
+    source: 'Intercom',
+    category: 'Feature Request',
+    chartType: 'pie',
+    chartData: {
+      labels: ['Dark Mode', 'Offline', 'Push', 'Search', 'Other'],
+      datasets: [
+        {
+          data: [35, 25, 15, 15, 10],
+          backgroundColor: [
+            'rgba(54, 162, 235, 0.8)',
+            'rgba(255, 99, 132, 0.8)',
+            'rgba(75, 192, 192, 0.8)',
+            'rgba(255, 206, 86, 0.8)',
+            'rgba(153, 102, 255, 0.8)',
+          ],
+          borderWidth: 0.5,
+        },
+      ],
+    },
+    chartOptions: {
+      plugins: {
+        legend: {
+          position: 'right',
+          labels: {
+            boxWidth: 8,
+            font: {
+              size: 9
+            },
+            padding: 5
+          }
+        }
+      }
+    }
+  },
+  {
+    id: '3',
+    title: 'CSAT improvements after latest release',
+    content: 'Customer satisfaction scores have improved by 12% following our v2.4 release that addressed the top reported bugs and UI inconsistencies.',
+    timestamp: '1 day ago',
+    source: 'Surveys',
+    category: 'Positive',
+  },
+  {
+    id: '4',
+    title: 'API documentation feedback',
+    content: 'Developer feedback indicates our API documentation needs more examples and clearer parameter descriptions. This was mentioned in 18 support tickets this month.',
+    timestamp: '2 days ago',
+    source: 'Email',
+    category: 'Documentation',
+    chartType: 'bar',
+    chartData: {
+      labels: ['Examples', 'Parameters', 'Outdated', 'Auth', 'Rate Limits'],
+      datasets: [
+        {
+          label: 'Mentions',
+          data: [18, 12, 8, 6, 4],
+          backgroundColor: 'rgba(75, 192, 192, 0.5)',
+          borderWidth: 0
+        },
+      ],
+    },
+    chartOptions: {
+      indexAxis: 'y',
+      scales: {
+        x: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 5
+          },
+          grid: {
+            display: false
+          }
+        },
+        y: {
+          grid: {
+            display: false
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          display: false
+        }
+      }
+    }
+  },
+  {
+    id: '5',
+    title: 'Integration with third-party tools',
+    content: 'Customers are requesting integrations with popular project management and CRM tools. Jira, Asana, and Salesforce are the most frequently mentioned.',
+    timestamp: '3 days ago',
+    source: 'Multiple Sources',
+    category: 'Integration',
+  }
+];
 
 export default function HomePage() {
   const [isFirstVisit, setIsFirstVisit] = useState(true);
@@ -518,6 +671,9 @@ export default function HomePage() {
           </div>
         </div>
       </div>
+
+      {/* Feed Section */}
+      <Feed insights={sampleInsights} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="bg-white p-8 rounded-lg shadow">
