@@ -41,6 +41,12 @@ const agentTiles: AgentTile[] = [
     name: 'Feedback from Top Customers Alert',
     description: 'Get instant notifications when high-value customers provide feedback or report issues.',
     type: 'Quality Monitor'
+  },
+  {
+    id: '4',
+    name: 'Close the Loop',
+    description: 'Automatically email (or message) all customers who reported an issue or feature request once the linked Jira or Linear ticket is resolved.',
+    type: 'Close the Loop'
   }
 ];
 
@@ -117,6 +123,8 @@ export default function AgentsPage() {
               onClick={() => {
                 if (tile.name === 'Quality Monitor') {
                   router.push('/agents/quality-monitor/new');
+                } else if (tile.name === 'Close the Loop') {
+                  router.push('/agents/close-the-loop/new');
                 }
               }}
             >

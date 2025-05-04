@@ -1,25 +1,15 @@
 {
   "pages": {
-    "/agents/page": [
+    "/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/agents/page.js"
-    ],
-    "/agents/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/agents/layout.js"
+      "static/chunks/app/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
-    ],
-    "/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
     ],
     "/auth/signup/page": [
       "static/chunks/webpack.js",
@@ -41,25 +31,25 @@
       "static/chunks/main-app.js",
       "static/chunks/app/home/layout.js"
     ],
-    "/agents/quality-monitor/new/page": [
+    "/agents/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/agents/quality-monitor/new/page.js"
+      "static/chunks/app/agents/page.js"
     ],
-    "/search/page": [
+    "/agents/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/search/page.js"
+      "static/chunks/app/agents/layout.js"
     ],
-    "/inbox/page": [
+    "/taxonomy/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/inbox/page.js"
+      "static/chunks/app/taxonomy/page.js"
     ],
-    "/inbox/layout": [
+    "/taxonomy/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/inbox/layout.js"
+      "static/chunks/app/taxonomy/layout.js"
     ],
     "/analyze/page": [
       "static/chunks/webpack.js",
@@ -70,6 +60,11 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/analyze/layout.js"
+    ],
+    "/agents/close-the-loop/new/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/agents/close-the-loop/new/page.js"
     ]
   }
 }

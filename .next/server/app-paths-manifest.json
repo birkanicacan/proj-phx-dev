@@ -1,7 +1,5 @@
 {
-  "/page": "app/page.js",
   "/onboarding/page": "app/onboarding/page.js",
-  "/agents/quality-monitor/new/page": "app/agents/quality-monitor/new/page.js",
   "/agents/page": "app/agents/page.js",
-  "/home/page": "app/home/page.js"
+  "/agents/close-the-loop/new/page": "app/agents/close-the-loop/new/page.js"
 }
