@@ -10,6 +10,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { useRouter } from 'next/navigation';
+import { FeedbackRecord } from '@/app/types/feedback';
+import { InsightRecord } from '@/app/types/insights';
 
 // UI components defined inline
 const Label = ({ htmlFor, className, children }: { htmlFor?: string; className?: string; children: React.ReactNode }) => (
@@ -89,9 +91,9 @@ const Checkbox = ({ id, label, checked, onChange }: { id: string, label: string,
 export default function CloseTheLoopAgentCreate() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
-  const [ticketProvider, setTicketProvider] = useState('jira');
+  const [sourceType, setSourceType] = useState<'jira' | 'linear' | 'feedback' | 'insight'>('jira');
   const [ticketSearch, setTicketSearch] = useState('');
-  const [selectedTicket, setSelectedTicket] = useState('');
+  const [selectedSource, setSelectedSource] = useState('');
   const [feedbackChannels, setFeedbackChannels] = useState({
     zendesk: false,
     twitter: false,
@@ -118,6 +120,20 @@ export default function CloseTheLoopAgentCreate() {
     { id: 'LIN-125', title: 'Fix billing issues', status: 'Backlog' }
   ];
 
+  // Mock feedback data
+  const feedbackRecords = [
+    { id: 'FB-001', title: 'Would love to see dark mode implementation', source: 'Zendesk', status: 'New' },
+    { id: 'FB-002', title: 'App crashes when uploading large files', source: 'App Store', status: 'Investigating' },
+    { id: 'FB-003', title: 'Need better onboarding experience', source: 'Twitter', status: 'Resolved' }
+  ];
+  
+  // Mock insight data
+  const insightRecords = [
+    { id: 'INS-001', title: 'Dark Mode Feature Request', category: 'Improvement', status: 'New' },
+    { id: 'INS-002', title: 'Large File Upload Issues', category: 'Complaint', status: 'In Progress' },
+    { id: 'INS-003', title: 'Mobile App Performance Issues', category: 'Complaint', status: 'In Progress' }
+  ];
+
   // Generate recipient list based on selected channels
   const generateRecipientList = () => {
     let recipients = [];
@@ -142,7 +158,7 @@ export default function CloseTheLoopAgentCreate() {
   const generateMessage = () => {
     const generatedMessage = `Dear valued customer,
 
-We wanted to let you know that the issue you reported regarding "${selectedTicket}" has been resolved.
+We wanted to let you know that the issue you reported regarding "${selectedSource}" has been resolved.
 
 Our team has worked diligently to address the concerns you raised, and we've implemented a solution that should improve your experience.
 
@@ -197,36 +213,69 @@ The Product Team`;
                 <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke="#a78bfa" strokeWidth="2" strokeLinecap="round"/></svg>
               </span>
               <div>
-                <div className="font-semibold text-gray-900">Step 1: Select Ticket (Trigger)</div>
-                <div className="text-gray-600 text-sm">Choose the ticket provider and select which ticket to monitor. When its status changes to "Done/Resolved", the workflow will proceed.</div>
+                <div className="font-semibold text-gray-900">Step 1: Select Source (Trigger)</div>
+                <div className="text-gray-600 text-sm">Choose which type of source to monitor. When its status changes to "Done/Resolved", the workflow will proceed.</div>
               </div>
             </div>
             <div className="p-6 space-y-4">
               <div>
-                <Label htmlFor="ticket-provider" className="block text-sm font-medium text-gray-800 mb-1">Ticket Provider</Label>
-                <div className="flex gap-4 mb-4">
+                <Label htmlFor="source-type" className="block text-sm font-medium text-gray-800 mb-1">Source Type</Label>
+                <div className="flex flex-wrap gap-4 mb-4">
                   <Button 
-                    variant={ticketProvider === 'jira' ? 'default' : 'outline'} 
-                    className={ticketProvider === 'jira' ? 'bg-purple-700 text-white hover:bg-purple-800' : 'border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900'}
-                    onClick={() => setTicketProvider('jira')}
+                    variant={sourceType === 'jira' ? 'default' : 'outline'} 
+                    className={sourceType === 'jira' ? 'bg-purple-700 text-white hover:bg-purple-800' : 'border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900'}
+                    onClick={() => {
+                      setSourceType('jira');
+                      setSelectedSource('');
+                    }}
                   >
                     Jira
                   </Button>
                   <Button 
-                    variant={ticketProvider === 'linear' ? 'default' : 'outline'} 
-                    className={ticketProvider === 'linear' ? 'bg-purple-700 text-white hover:bg-purple-800' : 'border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900'}
-                    onClick={() => setTicketProvider('linear')}
+                    variant={sourceType === 'linear' ? 'default' : 'outline'} 
+                    className={sourceType === 'linear' ? 'bg-purple-700 text-white hover:bg-purple-800' : 'border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900'}
+                    onClick={() => {
+                      setSourceType('linear');
+                      setSelectedSource('');
+                    }}
                   >
                     Linear
+                  </Button>
+                  <Button 
+                    variant={sourceType === 'feedback' ? 'default' : 'outline'} 
+                    className={sourceType === 'feedback' ? 'bg-purple-700 text-white hover:bg-purple-800' : 'border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900'}
+                    onClick={() => {
+                      setSourceType('feedback');
+                      setSelectedSource('');
+                    }}
+                  >
+                    Feedback
+                  </Button>
+                  <Button 
+                    variant={sourceType === 'insight' ? 'default' : 'outline'} 
+                    className={sourceType === 'insight' ? 'bg-purple-700 text-white hover:bg-purple-800' : 'border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900'}
+                    onClick={() => {
+                      setSourceType('insight');
+                      setSelectedSource('');
+                    }}
+                  >
+                    Insight
                   </Button>
                 </div>
               </div>
               
               <div>
-                <Label htmlFor="ticket-search" className="block text-sm font-medium text-gray-800 mb-1">Search for a ticket</Label>
+                <Label htmlFor="source-search" className="block text-sm font-medium text-gray-800 mb-1">
+                  {sourceType === 'jira' || sourceType === 'linear' 
+                    ? 'Search for a ticket' 
+                    : sourceType === 'feedback' 
+                      ? 'Search for feedback' 
+                      : 'Search for insight'
+                  }
+                </Label>
                 <Input 
-                  id="ticket-search"
-                  placeholder="Search by ticket ID or title..." 
+                  id="source-search"
+                  placeholder={`Search by ${sourceType === 'jira' || sourceType === 'linear' ? 'ticket ID or title' : 'ID or content'}...`} 
                   value={ticketSearch}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTicketSearch(e.target.value)}
                   className="w-full border border-gray-300 rounded p-2 text-gray-900 mb-4 placeholder:text-gray-500 focus:border-purple-700 focus:ring-purple-700"
@@ -235,14 +284,19 @@ The Product Team`;
                 <div className="border border-gray-200 rounded">
                   <div className="grid grid-cols-3 gap-4 p-3 border-b border-gray-200 bg-gray-50">
                     <div className="text-sm font-medium text-gray-700">ID</div>
-                    <div className="text-sm font-medium text-gray-700">Title</div>
-                    <div className="text-sm font-medium text-gray-700">Status</div>
+                    <div className="text-sm font-medium text-gray-700">
+                      {sourceType === 'jira' || sourceType === 'linear' ? 'Title' : sourceType === 'feedback' ? 'Content' : 'Title'}
+                    </div>
+                    <div className="text-sm font-medium text-gray-700">
+                      {sourceType === 'feedback' ? 'Source' : 'Status'}
+                    </div>
                   </div>
-                  {(ticketProvider === 'jira' ? jiraTickets : linearTickets).map((ticket) => (
+                  
+                  {sourceType === 'jira' && jiraTickets.map((ticket) => (
                     <div 
                       key={ticket.id} 
-                      className={`grid grid-cols-3 gap-4 p-3 border-b border-gray-200 last:border-0 hover:bg-gray-50 cursor-pointer ${selectedTicket === ticket.id ? 'bg-purple-50' : ''}`}
-                      onClick={() => setSelectedTicket(ticket.id)}
+                      className={`grid grid-cols-3 gap-4 p-3 border-b border-gray-200 last:border-0 hover:bg-gray-50 cursor-pointer ${selectedSource === ticket.id ? 'bg-purple-50' : ''}`}
+                      onClick={() => setSelectedSource(ticket.id)}
                     >
                       <div className="text-gray-900">{ticket.id}</div>
                       <div className="text-gray-900">{ticket.title}</div>
@@ -251,6 +305,58 @@ The Product Team`;
                           ticket.status === 'Done' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
                         }`}>
                           {ticket.status}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {sourceType === 'linear' && linearTickets.map((ticket) => (
+                    <div 
+                      key={ticket.id} 
+                      className={`grid grid-cols-3 gap-4 p-3 border-b border-gray-200 last:border-0 hover:bg-gray-50 cursor-pointer ${selectedSource === ticket.id ? 'bg-purple-50' : ''}`}
+                      onClick={() => setSelectedSource(ticket.id)}
+                    >
+                      <div className="text-gray-900">{ticket.id}</div>
+                      <div className="text-gray-900">{ticket.title}</div>
+                      <div>
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                          ticket.status === 'Done' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                        }`}>
+                          {ticket.status}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {sourceType === 'feedback' && feedbackRecords.map((feedback) => (
+                    <div 
+                      key={feedback.id} 
+                      className={`grid grid-cols-3 gap-4 p-3 border-b border-gray-200 last:border-0 hover:bg-gray-50 cursor-pointer ${selectedSource === feedback.id ? 'bg-purple-50' : ''}`}
+                      onClick={() => setSelectedSource(feedback.id)}
+                    >
+                      <div className="text-gray-900">{feedback.id}</div>
+                      <div className="text-gray-900">{feedback.title}</div>
+                      <div>
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          {feedback.source}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {sourceType === 'insight' && insightRecords.map((insight) => (
+                    <div 
+                      key={insight.id} 
+                      className={`grid grid-cols-3 gap-4 p-3 border-b border-gray-200 last:border-0 hover:bg-gray-50 cursor-pointer ${selectedSource === insight.id ? 'bg-purple-50' : ''}`}
+                      onClick={() => setSelectedSource(insight.id)}
+                    >
+                      <div className="text-gray-900">{insight.id}</div>
+                      <div className="text-gray-900">{insight.title}</div>
+                      <div>
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                          insight.category === 'Improvement' ? 'bg-blue-100 text-blue-800' : 'bg-orange-100 text-orange-800'
+                        }`}>
+                          {insight.status}
                         </span>
                       </div>
                     </div>
@@ -460,7 +566,7 @@ The Product Team`;
         <span className="mr-3 text-purple-800">
           <svg width="20" height="20" fill="none" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" stroke="#7e22ce" strokeWidth="2" fill="#f5f3ff"/><path d="M10 6v4" stroke="#7e22ce" strokeWidth="1.5" strokeLinecap="round"/><circle cx="10" cy="13.5" r="1" fill="#7e22ce"/></svg>
         </span>
-        <span className="text-sm text-purple-950">Close the Loop Agent automatically follows up with every customer who reported an issue or feature request once the linked Jira or Linear ticket is marked Done, helping teams "close the loop" at scale. <a href="#" className="underline text-purple-800 hover:text-purple-900">Learn more.</a></span>
+        <span className="text-sm text-purple-950">Close the Loop Agent automatically follows up with every customer who reported an issue or feature request once the linked Jira/Linear ticket, Feedback, or Insight is marked Done, helping teams "close the loop" at scale. <a href="#" className="underline text-purple-800 hover:text-purple-900">Learn more.</a></span>
       </div>
       
       {/* Progress bar */}
@@ -492,7 +598,7 @@ The Product Team`;
           <Button 
             onClick={() => setCurrentStep(currentStep + 1)}
             className="bg-purple-700 hover:bg-purple-800 text-white"
-            disabled={currentStep === 1 && !selectedTicket}
+            disabled={currentStep === 1 && !selectedSource}
           >
             Continue
           </Button>
