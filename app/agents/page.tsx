@@ -47,6 +47,12 @@ const agentTiles: AgentTile[] = [
     name: 'Close the Loop',
     description: 'Automatically email (or message) all customers who reported an issue or feature request once the linked Jira or Linear ticket is resolved.',
     type: 'Close the Loop'
+  },
+  {
+    id: '5',
+    name: 'Newsfeed Agent',
+    description: 'Monitor specified feedback signals and push meaningful insights to Slack or email the moment a pattern emerges.',
+    type: 'Newsfeed'
   }
 ];
 
@@ -125,6 +131,8 @@ export default function AgentsPage() {
                   router.push('/agents/quality-monitor/new');
                 } else if (tile.name === 'Close the Loop') {
                   router.push('/agents/close-the-loop/new');
+                } else if (tile.name === 'Newsfeed Agent') {
+                  router.push('/agents/newsfeed/new');
                 }
               }}
             >

@@ -75,6 +75,11 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/inbox/layout.js"
+    ],
+    "/agents/newsfeed/new/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/agents/newsfeed/new/page.js"
     ]
   }
 }
