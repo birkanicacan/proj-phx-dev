@@ -275,13 +275,13 @@ export default function FeedbackKnowledgePane({ isOpen, onClose }: FeedbackKnowl
       fixed bg-white border-t border-gray-200 shadow-lg transition-all duration-300 ease-in-out z-50 flex flex-col
       ${isFullScreen 
         ? 'inset-0 left-56' 
-        : 'bottom-0 left-56 right-0 h-[40vh] max-h-[400px]'
+        : 'bottom-0 left-56 right-0 h-[55vh] min-h-[400px]'
       }
     `}>
       {/* Header */}
       <div className="flex-shrink-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <h2 className="text-xl font-semibold text-gray-900">Feedback Knowledge Explorer</h2>
+          <h2 className="text-xl font-semibold text-gray-900">Feedback Explorer</h2>
           <div className="flex items-center gap-1">
             <button
               onClick={() => setActiveTab('sources')}
@@ -311,7 +311,7 @@ export default function FeedbackKnowledgePane({ isOpen, onClose }: FeedbackKnowl
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              Object Linkage
+              Relations
             </button>
           </div>
         </div>
@@ -522,7 +522,7 @@ export default function FeedbackKnowledgePane({ isOpen, onClose }: FeedbackKnowl
         {activeTab === 'linkage' && (
           <div className="h-full p-6 overflow-y-auto">
             <div className="mb-4">
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Object Linkage & Enrichment Context</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Relations & Enrichment Context</h3>
               <p className="text-sm text-gray-600">
                 Understand how each feedback record connects to other objects in your system
               </p>
@@ -556,7 +556,7 @@ export default function FeedbackKnowledgePane({ isOpen, onClose }: FeedbackKnowl
               {/* Recent Linkages */}
               <div className="bg-white border border-gray-200 rounded-lg">
                 <div className="px-4 py-3 border-b border-gray-200">
-                  <h4 className="font-medium text-gray-900">Recent Object Connections</h4>
+                  <h4 className="font-medium text-gray-900">Recent Object Relations</h4>
                 </div>
                 <div className="p-4 space-y-3">
                   <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
