@@ -236,7 +236,7 @@ const sampleFeedbackForThemes: FeedbackRecord[] = [
 const mockTaxonomyData: TaxonomyNode[] = [
   {
     id: 1,
-    name: 'Overall Satisfaction with Account Management',
+    name: 'L1: Account Management',
     level: 1,
     feedbackCount: 45,
     uniqueUsers: 32,
@@ -245,7 +245,7 @@ const mockTaxonomyData: TaxonomyNode[] = [
     themes: [
       {
         id: 2,
-        name: 'Login and Authentication Issues',
+        name: 'L2: User Identity & Authentication',
         level: 2,
         parent: 1,
         feedbackCount: 18,
@@ -546,6 +546,7 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
   const [panelWidth, setPanelWidth] = useState(600); // Default width like FeedbackDetailsPanel
   const [isResizing, setIsResizing] = useState(false);
   const [activeView, setActiveView] = useState<'taxonomy' | 'themes'>('taxonomy');
+  const [selectedNodeSource, setSelectedNodeSource] = useState<'taxonomy' | 'themes' | null>(null);
 
   // Handle mouse events for resizing - must be defined before useEffect
   const handleMouseMove = React.useCallback((e: MouseEvent) => {
@@ -608,12 +609,52 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
 
   const handleNodeClick = (node: TaxonomyNode) => {
     setSelectedNode(node);
+    setSelectedNodeSource('taxonomy'); // Track that this came from L1/L2/L3 tab
     setSelectedFeedback(null); // Clear feedback selection when selecting a node
   };
 
   const handleFeedbackClick = (feedback: FeedbackRecord) => {
     setSelectedFeedback(feedback);
     setSelectedNode(null); // Clear node selection when selecting feedback
+    setSelectedNodeSource(null); // Clear source tracking
+  };
+
+  const renderThemesTable = (themes: ThemeItem[]) => {
+    return (
+      <div className="bg-white rounded-lg border">
+        <div className="px-3 py-2 border-b border-gray-200 bg-gray-50">
+          <div className="grid grid-cols-4 gap-2 text-xs font-medium text-gray-700">
+            <span>Theme Name</span>
+            <span className="text-center"># of Feedback</span>
+            <span className="text-center">Unique Users</span>
+            <span className="text-center">CSAT Impact</span>
+          </div>
+        </div>
+        <div className="divide-y divide-gray-100 max-h-64 overflow-y-auto">
+          {themes.map((theme) => (
+            <div 
+              key={theme.id}
+              className="px-3 py-3 hover:bg-gray-50 cursor-pointer grid grid-cols-4 gap-2 items-center"
+              onClick={() => handleThemeClick(theme)}
+            >
+              <div className="text-sm text-gray-900 truncate" title={theme.name}>
+                {theme.name}
+              </div>
+              <div className="text-sm text-gray-900 text-center">{theme.feedbackCount}</div>
+              <div className="text-sm text-gray-900 text-center">{theme.uniqueUsers}</div>
+              <div className={`text-sm font-medium text-center ${getCsatColor(theme.csatImpact)}`}>
+                {theme.csatImpact > 0 ? '+' : ''}{theme.csatImpact}
+              </div>
+            </div>
+          ))}
+          {themes.length === 0 && (
+            <div className="px-3 py-6 text-center text-gray-500 text-sm">
+              No themes found for this item
+            </div>
+          )}
+        </div>
+      </div>
+    );
   };
 
   const toggleThemeExpansion = (themeId: number) => {
@@ -636,7 +677,7 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
         uniqueUsers: 32,
         csatImpact: -2.1,
         children: [
-          { id: 2002, name: 'Login and Authentication Issues', feedbackCount: 18, uniqueUsers: 14, csatImpact: -2.8 },
+          { id: 2002, name: 'Praise For Authentication Options', feedbackCount: 18, uniqueUsers: 14, csatImpact: -2.8 },
           { id: 2003, name: 'Account Settings Confusion', feedbackCount: 15, uniqueUsers: 12, csatImpact: -1.9 },
           { id: 2004, name: 'Profile Management Problems', feedbackCount: 12, uniqueUsers: 6, csatImpact: -1.4 }
         ]
@@ -737,7 +778,7 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
           return [
             {
               id: 1001,
-              name: 'Overall Satisfaction with Account Management',
+              name: 'L1: Account Management',
               feedbackCount: 20,
               uniqueUsers: 15,
               csatImpact: -2.1,
@@ -865,8 +906,8 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
     // Match feedback based on node name or level
     let matchingFeedback: FeedbackRecord[] = [];
     
-    // For Login and Authentication Issues theme specifically
-    if (node.name.includes('Login and Authentication Issues')) {
+    // For L2: User Identity & Authentication theme specifically
+    if (node.name.includes('User Identity & Authentication')) {
       matchingFeedback = sampleFeedbackForThemes.filter(feedback => 
         feedback.theme === 'Login and Authentication Issues'
       );
@@ -944,6 +985,7 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
       description: `This theme represents feedback patterns related to ${theme.name.toLowerCase()}. Users have shared various insights and experiences that help us understand their needs and pain points in this area.`
     };
     setSelectedNode(themeAsNode);
+    setSelectedNodeSource('themes'); // Track that this came from themes tab
   };
 
   const renderThemeRows = (themes: ThemeItem[], level: number = 0): React.JSX.Element[] => {
@@ -1226,7 +1268,10 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
           <div className="sticky top-0 bg-white z-10 px-6 py-4 border-b border-gray-200">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold text-gray-900">{selectedNode.name}</h2>
-              <Button variant="ghost" size="icon" onClick={() => setSelectedNode(null)}>
+              <Button variant="ghost" size="icon" onClick={() => {
+                setSelectedNode(null);
+                setSelectedNodeSource(null);
+              }}>
                 <X className="h-5 w-5 text-gray-500" />
               </Button>
             </div>
@@ -1271,57 +1316,63 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
                 </div>
               </div>
 
-              {/* Feedback Section */}
+              {/* Conditional Section - Themes for L1/L2/L3, Feedback for Themes */}
               <div>
-                <label className="text-sm font-medium text-gray-500">Feedback</label>
+                <label className="text-sm font-medium text-gray-500">
+                  {selectedNodeSource === 'taxonomy' ? 'Themes' : 'Feedback'}
+                </label>
                 
-                <div className="bg-white rounded-lg border">
-                  <div className="px-3 py-2 border-b border-gray-200 bg-gray-50">
-                    <div className="grid grid-cols-6 gap-2 text-xs font-medium text-gray-700">
-                      <span>ID</span>
-                      <span>Customer</span>
-                      <span>Type</span>
-                      <span className="text-center">Priority</span>
-                      <span className="text-center">Status</span>
-                      <span className="text-center">Sentiment</span>
+                {selectedNodeSource === 'taxonomy' ? (
+                  renderThemesTable(getThemesForNode(selectedNode))
+                ) : (
+                  <div className="bg-white rounded-lg border">
+                    <div className="px-3 py-2 border-b border-gray-200 bg-gray-50">
+                      <div className="grid grid-cols-6 gap-2 text-xs font-medium text-gray-700">
+                        <span>ID</span>
+                        <span>Customer</span>
+                        <span>Type</span>
+                        <span className="text-center">Priority</span>
+                        <span className="text-center">Status</span>
+                        <span className="text-center">Sentiment</span>
+                      </div>
+                    </div>
+                    <div className="divide-y divide-gray-100 max-h-64 overflow-y-auto">
+                      {getFeedbackForNode(selectedNode).map((feedback) => (
+                        <div 
+                          key={feedback.id}
+                          className="px-3 py-3 hover:bg-gray-50 cursor-pointer grid grid-cols-6 gap-2 items-center"
+                          onClick={() => handleFeedbackClick(feedback)}
+                        >
+                          <div className="text-sm font-mono text-blue-600">{feedback.id}</div>
+                          <div className="text-sm text-gray-900 truncate" title={feedback.customerName}>
+                            {feedback.customerName}
+                          </div>
+                          <div className="text-sm text-gray-700">{feedback.type}</div>
+                          <div className="text-center">
+                            <Badge className={`text-xs ${getPriorityColor(feedback.priority)}`}>
+                              {feedback.priority}
+                            </Badge>
+                          </div>
+                          <div className="text-center">
+                            <Badge className={`text-xs ${getStatusColor(feedback.status)}`}>
+                              {feedback.status}
+                            </Badge>
+                          </div>
+                          <div className="text-center">
+                            <Badge className={`text-xs ${getSentimentColor(feedback.sentiment)}`}>
+                              {feedback.sentiment}
+                            </Badge>
+                          </div>
+                        </div>
+                      ))}
+                      {getFeedbackForNode(selectedNode).length === 0 && (
+                        <div className="px-3 py-6 text-center text-gray-500 text-sm">
+                          No feedback found for this item
+                        </div>
+                      )}
                     </div>
                   </div>
-                  <div className="divide-y divide-gray-100 max-h-64 overflow-y-auto">
-                    {getFeedbackForNode(selectedNode).map((feedback) => (
-                      <div 
-                        key={feedback.id}
-                        className="px-3 py-3 hover:bg-gray-50 cursor-pointer grid grid-cols-6 gap-2 items-center"
-                        onClick={() => handleFeedbackClick(feedback)}
-                      >
-                        <div className="text-sm font-mono text-blue-600">{feedback.id}</div>
-                        <div className="text-sm text-gray-900 truncate" title={feedback.customerName}>
-                          {feedback.customerName}
-                        </div>
-                        <div className="text-sm text-gray-700">{feedback.type}</div>
-                        <div className="text-center">
-                          <Badge className={`text-xs ${getPriorityColor(feedback.priority)}`}>
-                            {feedback.priority}
-                          </Badge>
-                        </div>
-                        <div className="text-center">
-                          <Badge className={`text-xs ${getStatusColor(feedback.status)}`}>
-                            {feedback.status}
-                          </Badge>
-                        </div>
-                        <div className="text-center">
-                          <Badge className={`text-xs ${getSentimentColor(feedback.sentiment)}`}>
-                            {feedback.sentiment}
-                          </Badge>
-                        </div>
-                      </div>
-                    ))}
-                    {getFeedbackForNode(selectedNode).length === 0 && (
-                      <div className="px-3 py-6 text-center text-gray-500 text-sm">
-                        No feedback found for this item
-                      </div>
-                    )}
-                  </div>
-                </div>
+                )}
               </div>
 
               {/* Actions Section - Moved to bottom */}
