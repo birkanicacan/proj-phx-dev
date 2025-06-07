@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import { FeedbackRecord, FeedbackStatus, Priority, Sentiment } from '../types/feedback';
+import FeedbackDetailsPanel from './FeedbackDetailsPanel';
 
 interface FeedbackKnowledgePaneProps {
   isOpen: boolean;
@@ -257,11 +258,16 @@ export default function FeedbackKnowledgePane({ isOpen, onClose }: FeedbackKnowl
   const [activeTab, setActiveTab] = useState<'sources' | 'records' | 'linkage'>('sources');
   const [searchQuery, setSearchQuery] = useState('');
   const [addColumnOpen, setAddColumnOpen] = useState(false);
+  const [selectedFeedback, setSelectedFeedback] = useState<FeedbackRecord | null>(null);
 
   if (!isOpen) return null;
 
   const toggleFullScreen = () => {
     setIsFullScreen(!isFullScreen);
+  };
+
+  const handleRowClick = (feedback: FeedbackRecord) => {
+    setSelectedFeedback(feedback);
   };
 
   return (
@@ -429,7 +435,7 @@ export default function FeedbackKnowledgePane({ isOpen, onClose }: FeedbackKnowl
                 </div>
               </div>
             </div>
-            <div className="flex-1 min-h-0 overflow-y-auto">
+            <div className={`flex-1 min-h-0 overflow-y-auto transition-all duration-200 ${selectedFeedback ? 'mr-[600px]' : ''}`}>
               <Table>
                 <TableHeader>
                   <TableRow className="border-b border-gray-200">
@@ -449,7 +455,8 @@ export default function FeedbackKnowledgePane({ isOpen, onClose }: FeedbackKnowl
                   {sampleFeedback.map((feedback) => (
                     <TableRow
                       key={feedback.id}
-                      className="hover:bg-gray-50 border-b border-gray-200"
+                      className="hover:bg-gray-50 border-b border-gray-200 cursor-pointer"
+                      onClick={() => handleRowClick(feedback)}
                     >
                       <TableCell className="max-w-[300px]">
                         <p className="text-gray-900 font-medium">{feedback.content}</p>
@@ -602,6 +609,14 @@ export default function FeedbackKnowledgePane({ isOpen, onClose }: FeedbackKnowl
           </div>
         )}
       </div>
+
+      {/* Feedback Details Panel */}
+      {selectedFeedback && (
+        <FeedbackDetailsPanel
+          feedback={selectedFeedback}
+          onClose={() => setSelectedFeedback(null)}
+        />
+      )}
     </div>
   );
 } 
