@@ -24,6 +24,7 @@ import {
   ExclamationTriangleIcon,
   StarIcon,
   ArrowTrendingUpIcon,
+  ShareIcon,
 } from '@heroicons/react/24/outline';
 
 interface SectionProps {
@@ -245,6 +246,13 @@ export default function Sidebar() {
         >
           <AdjustmentsHorizontalIcon className="w-5 h-5 mr-2 text-gray-700" />
           Taxonomy
+        </Link>
+        <Link
+          href="/knowledge"
+          className="flex items-center w-full px-2 py-1 text-sm text-gray-900 hover:bg-gray-100 rounded"
+        >
+          <ShareIcon className="w-5 h-5 mr-2 text-gray-700" />
+          Knowledge
         </Link>
         <button className="flex items-center w-full px-2 py-1 text-sm text-gray-900 hover:bg-gray-100 rounded">
           <CogIcon className="w-5 h-5 mr-2 text-gray-700" />

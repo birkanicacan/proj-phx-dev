@@ -1,7 +1,4 @@
 {
-  "/onboarding/page": "app/onboarding/page.js",
-  "/agents/newsfeed/new/page": "app/agents/newsfeed/new/page.js",
-  "/agents/close-the-loop/new/page": "app/agents/close-the-loop/new/page.js",
-  "/feedback/page": "app/feedback/page.js",
-  "/home/page": "app/home/page.js"
+  "/page": "app/page.js",
+  "/knowledge/page": "app/knowledge/page.js"
 }

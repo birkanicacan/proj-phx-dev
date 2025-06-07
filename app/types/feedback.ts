@@ -1,4 +1,4 @@
-export type FeedbackSource = 'Zendesk' | 'Twitter' | 'Salesforce' | 'G2' | 'Other';
+export type FeedbackSource = 'Zendesk' | 'Twitter' | 'Salesforce' | 'G2' | 'Gong' | 'App Store' | 'Qualtrics' | 'Other';
 export type FeedbackType = 'Bug' | 'Feature Request' | 'Complaint' | 'Praise';
 export type FeedbackStatus = 'New' | 'In Review' | 'Addressed';
 export type Sentiment = 'Positive' | 'Negative' | 'Neutral';
