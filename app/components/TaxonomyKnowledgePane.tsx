@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { X, Maximize2, Minimize2, ChevronRight, ChevronDown, Plus, Filter, MoreHorizontal } from 'lucide-react';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
@@ -357,11 +357,56 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
   const [selectedNode, setSelectedNode] = useState<TaxonomyNode | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedThemes, setExpandedThemes] = useState<Set<number>>(new Set([1001])); // First theme expanded by default
+  const [panelWidth, setPanelWidth] = useState(600); // Default width like FeedbackDetailsPanel
+  const [isResizing, setIsResizing] = useState(false);
 
+  // Handle mouse events for resizing - must be defined before useEffect
+  const handleMouseMove = React.useCallback((e: MouseEvent) => {
+    if (!isResizing) return;
+    
+    const newWidth = window.innerWidth - e.clientX;
+    const minWidth = 400;
+    const maxWidth = window.innerWidth * 0.8;
+    
+    setPanelWidth(Math.max(minWidth, Math.min(maxWidth, newWidth)));
+  }, [isResizing]);
+
+  const handleMouseUp = React.useCallback(() => {
+    setIsResizing(false);
+  }, []);
+
+  // useEffect must be called before any early returns
+  React.useEffect(() => {
+    if (isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+    } else {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+  }, [isResizing, handleMouseMove, handleMouseUp]);
+
+  // Early return after all hooks
   if (!isOpen) return null;
 
   const toggleFullScreen = () => {
     setIsFullScreen(!isFullScreen);
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsResizing(true);
+    e.preventDefault();
   };
 
   const toggleNodeExpansion = (nodeId: number) => {
@@ -652,14 +697,14 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
   return (
     <>
       <div className={`
-        fixed bg-white border-t border-gray-200 shadow-lg transition-all duration-300 ease-in-out z-50 flex
+        fixed bg-white border-t border-gray-200 shadow-lg transition-all duration-300 ease-in-out z-50
         ${isFullScreen 
           ? 'inset-0 left-56' 
           : 'bottom-0 left-56 right-0 h-[55vh] min-h-[400px]'
         }
       `}>
         {/* Main Content */}
-        <div className="flex-1 flex flex-col min-w-0">
+        <div className="h-full flex flex-col">
           {/* Header */}
           <div className="flex-shrink-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -730,77 +775,69 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
           </div>
         </div>
 
-        {/* Right Panel for Node Details */}
-        {selectedNode && (
-          <div className="w-[32rem] border-l border-gray-200 bg-gray-50 flex flex-col">
-            <div className="p-4 bg-white border-b border-gray-200">
-              <div className="flex items-center justify-between">
-                <h3 className="font-medium text-gray-900">Node Details</h3>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setSelectedNode(null)}
-                  className="h-8 w-8 p-0"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
+      {/* Right Panel for Node Details - Overlay */}
+      {selectedNode && (
+        <div 
+          className="fixed inset-y-0 right-0 bg-white shadow-xl border-l border-gray-200 overflow-y-auto z-50"
+          style={{ width: panelWidth }}
+        >
+          {/* Resize Handle */}
+          <div
+            className="absolute left-0 top-0 bottom-0 w-1 bg-gray-300 hover:bg-gray-400 cursor-col-resize"
+            onMouseDown={handleMouseDown}
+          />
+          
+          <div className="sticky top-0 bg-white z-10 px-6 py-4 border-b border-gray-200">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-gray-900">{selectedNode.name}</h2>
+              <Button variant="ghost" size="icon" onClick={() => setSelectedNode(null)}>
+                <X className="h-5 w-5 text-gray-500" />
+              </Button>
             </div>
-            
-            <div className="flex-1 overflow-y-auto p-4 space-y-6">
-              {/* Node Title */}
-              <div>
-                <h4 className="text-lg font-semibold text-gray-900 mb-2">{selectedNode.name}</h4>
-              </div>
+          </div>
+          
+          <div className="px-6 py-4">
+            <div className="space-y-6">
 
-              {/* Scorecards */}
-              <div className="space-y-3">
-                <div className="bg-white p-3 rounded-lg border">
-                  <div className="text-sm text-gray-600"># of Feedback</div>
-                  <div className="text-xl font-semibold text-gray-900">{selectedNode.feedbackCount}</div>
+              {/* Scorecards - Grid layout like FeedbackDetailsPanel */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium text-gray-500"># of Feedback</label>
+                  <div className="mt-1 text-xl font-semibold text-gray-900">{selectedNode.feedbackCount}</div>
                 </div>
-                <div className="bg-white p-3 rounded-lg border">
-                  <div className="text-sm text-gray-600"># CSAT Impact</div>
-                  <div className="text-sm text-gray-500">Empty</div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500"># CSAT Impact</label>
+                  <div className="mt-1 text-gray-900">{selectedNode.csatImpact}</div>
                 </div>
-                <div className="bg-white p-3 rounded-lg border">
-                  <div className="text-sm text-gray-600"># Parent Item</div>
-                  <div className="text-sm text-gray-500">Empty</div>
-                </div>
-                <div className="bg-white p-3 rounded-lg border">
-                  <div className="text-sm text-gray-600"># Sub-item</div>
-                  <div className="space-y-1">
-                    {(selectedNode.themes || selectedNode.subthemes || []).map((child) => (
-                      <div key={child.id} className="flex items-center gap-2">
-                        <span className="text-sm text-blue-600">📁</span>
-                        <span className="text-sm text-gray-900">{child.name}</span>
-                      </div>
-                    ))}
+                <div>
+                  <label className="text-sm font-medium text-gray-500"># Parent Item</label>
+                  <div className="mt-1 text-gray-900">
+                    {selectedNode.parent ? `ID: ${selectedNode.parent}` : 'None'}
                   </div>
                 </div>
-                <div className="bg-white p-3 rounded-lg border">
-                  <div className="text-sm text-gray-600"># Unique Users</div>
-                  <div className="text-sm text-gray-500">Empty</div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500"># Sub-item</label>
+                  <div className="mt-1 text-gray-900">
+                    {(selectedNode.themes?.length || 0) + (selectedNode.subthemes?.length || 0)}
+                  </div>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500"># Unique Users</label>
+                  <div className="mt-1 text-gray-900">{selectedNode.uniqueUsers}</div>
                 </div>
               </div>
 
-              {/* Description */}
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <span className="text-blue-500">ℹ️</span>
-                  <h5 className="font-semibold text-gray-900">Description</h5>
-                </div>
-                <div className="bg-white p-4 rounded-lg border">
-                  <p className="text-sm text-gray-700 leading-relaxed">{selectedNode.description}</p>
+              {/* Description - Matching FeedbackDetailsPanel styling */}
+              <div>
+                <label className="text-sm font-medium text-gray-500">Description</label>
+                <div className="mt-2 p-4 bg-gray-50 rounded-lg">
+                  <p className="text-sm text-gray-900 leading-relaxed">{selectedNode.description}</p>
                 </div>
               </div>
 
               {/* Themes Section */}
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-gray-600">🎯</span>
-                  <h5 className="font-semibold text-gray-900">Themes</h5>
-                </div>
+              <div>
+                <label className="text-sm font-medium text-gray-500">Themes</label>
                 
                 <div className="bg-white rounded-lg border">
                   <div className="px-3 py-2 border-b border-gray-200 bg-gray-50">
@@ -818,9 +855,9 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
               </div>
 
               {/* Actions Section - Moved to bottom */}
-              <div className="space-y-3 pt-4 border-t border-gray-200">
-                <h5 className="font-semibold text-gray-900">Actions</h5>
-                <div className="space-y-2">
+              <div className="pt-4 border-t border-gray-200">
+                <label className="text-sm font-medium text-gray-500">Actions</label>
+                <div className="mt-2 space-y-2">
                   <Button variant="outline" size="sm" className="w-full justify-start text-gray-800 border-gray-300 hover:bg-gray-100">
                     Edit node
                   </Button>
@@ -843,7 +880,8 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
               </div>
             </div>
           </div>
-        )}
+        </div>
+      )}
       </div>
     </>
   );

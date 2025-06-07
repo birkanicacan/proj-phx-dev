@@ -1,3 +1,4 @@
+import React from 'react';
 import { X } from 'lucide-react';
 import { Badge } from './ui/badge';
 import { Avatar, AvatarFallback } from './ui/avatar';
@@ -10,8 +11,61 @@ interface FeedbackDetailsPanelProps {
 }
 
 export default function FeedbackDetailsPanel({ feedback, onClose }: FeedbackDetailsPanelProps) {
+  const [panelWidth, setPanelWidth] = React.useState(600); // Default width
+  const [isResizing, setIsResizing] = React.useState(false);
+
+  // Handle mouse events for resizing - must be defined before useEffect
+  const handleMouseMove = React.useCallback((e: MouseEvent) => {
+    if (!isResizing) return;
+    
+    const newWidth = window.innerWidth - e.clientX;
+    const minWidth = 400;
+    const maxWidth = window.innerWidth * 0.8;
+    
+    setPanelWidth(Math.max(minWidth, Math.min(maxWidth, newWidth)));
+  }, [isResizing]);
+
+  const handleMouseUp = React.useCallback(() => {
+    setIsResizing(false);
+  }, []);
+
+  // useEffect for resize functionality
+  React.useEffect(() => {
+    if (isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+    } else {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+  }, [isResizing, handleMouseMove, handleMouseUp]);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsResizing(true);
+    e.preventDefault();
+  };
+
   return (
-    <div className="fixed inset-y-0 right-0 w-[600px] bg-white shadow-xl border-l border-gray-200 overflow-y-auto">
+    <div 
+      className="fixed inset-y-0 right-0 bg-white shadow-xl border-l border-gray-200 overflow-y-auto"
+      style={{ width: panelWidth }}
+    >
+      {/* Resize Handle */}
+      <div
+        className="absolute left-0 top-0 bottom-0 w-1 bg-gray-300 hover:bg-gray-400 cursor-col-resize"
+        onMouseDown={handleMouseDown}
+      />
       <div className="sticky top-0 bg-white z-10 px-6 py-4 border-b border-gray-200">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold text-gray-900">Feedback Details</h2>
