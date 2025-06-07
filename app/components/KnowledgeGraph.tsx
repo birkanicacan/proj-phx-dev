@@ -9,14 +9,16 @@ import {
   ShoppingBagIcon,
   TagIcon,
   PlusIcon,
-  ArrowsRightLeftIcon
+  ArrowsRightLeftIcon,
+  AdjustmentsHorizontalIcon
 } from '@heroicons/react/24/outline';
 import FeedbackKnowledgePane from './FeedbackKnowledgePane';
+import TaxonomyKnowledgePane from './TaxonomyKnowledgePane';
 
 interface DataObject {
   id: string;
   name: string;
-  type: 'feedback' | 'users' | 'accounts' | 'opportunities' | 'stores' | 'products' | 'connect';
+  type: 'feedback' | 'taxonomy' | 'users' | 'accounts' | 'opportunities' | 'stores' | 'products' | 'connect';
   status: 'connected' | 'derived' | 'potential' | 'placeholder';
   description: string;
   icon: React.ComponentType<any>;
@@ -33,6 +35,14 @@ export default function KnowledgeGraph() {
       status: 'connected',
       description: 'Direct from third-party systems (Zendesk, Intercom)',
       icon: DocumentTextIcon
+    },
+    {
+      id: 'taxonomy',
+      name: 'Taxonomy',
+      type: 'taxonomy',
+      status: 'connected',
+      description: 'Hierarchical classification of feedback themes and topics',
+      icon: AdjustmentsHorizontalIcon
     },
     {
       id: 'users',
@@ -130,6 +140,8 @@ export default function KnowledgeGraph() {
                     onClick={() => {
                       if (obj.id === 'feedback') {
                         setSelectedObject(selectedObject === 'feedback' ? null : 'feedback');
+                      } else if (obj.id === 'taxonomy') {
+                        setSelectedObject(selectedObject === 'taxonomy' ? null : 'taxonomy');
                       }
                     }}
                   >
@@ -160,6 +172,12 @@ export default function KnowledgeGraph() {
       {/* Feedback Knowledge Pane */}
       <FeedbackKnowledgePane
         isOpen={selectedObject === 'feedback'}
+        onClose={() => setSelectedObject(null)}
+      />
+
+      {/* Taxonomy Knowledge Pane */}
+      <TaxonomyKnowledgePane
+        isOpen={selectedObject === 'taxonomy'}
         onClose={() => setSelectedObject(null)}
       />
     </>
