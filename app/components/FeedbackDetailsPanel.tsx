@@ -58,7 +58,7 @@ export default function FeedbackDetailsPanel({ feedback, onClose }: FeedbackDeta
 
   return (
     <div 
-      className="fixed inset-y-0 right-0 bg-white shadow-xl border-l border-gray-200 overflow-y-auto"
+      className="fixed inset-y-0 right-0 bg-white shadow-xl border-l border-gray-200 overflow-y-auto z-[60]"
       style={{ width: panelWidth }}
     >
       {/* Resize Handle */}

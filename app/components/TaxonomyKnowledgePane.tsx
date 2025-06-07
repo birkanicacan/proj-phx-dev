@@ -20,6 +20,7 @@ import {
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
 import { FeedbackRecord, Sentiment, Priority, FeedbackType, FeedbackStatus } from '../types/feedback';
+import FeedbackDetailsPanel from './FeedbackDetailsPanel';
 
 interface TaxonomyNode {
   id: number;
@@ -539,6 +540,7 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [expandedNodes, setExpandedNodes] = useState<Set<number>>(new Set([1])); // L1: Account Management expanded by default
   const [selectedNode, setSelectedNode] = useState<TaxonomyNode | null>(null);
+  const [selectedFeedback, setSelectedFeedback] = useState<FeedbackRecord | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedThemes, setExpandedThemes] = useState<Set<number>>(new Set([1001])); // First theme expanded by default
   const [panelWidth, setPanelWidth] = useState(600); // Default width like FeedbackDetailsPanel
@@ -606,6 +608,12 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
 
   const handleNodeClick = (node: TaxonomyNode) => {
     setSelectedNode(node);
+    setSelectedFeedback(null); // Clear feedback selection when selecting a node
+  };
+
+  const handleFeedbackClick = (feedback: FeedbackRecord) => {
+    setSelectedFeedback(feedback);
+    setSelectedNode(null); // Clear node selection when selecting feedback
   };
 
   const toggleThemeExpansion = (themeId: number) => {
@@ -1266,6 +1274,7 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
                       <div 
                         key={feedback.id}
                         className="px-3 py-3 hover:bg-gray-50 cursor-pointer grid grid-cols-6 gap-2 items-center"
+                        onClick={() => handleFeedbackClick(feedback)}
                       >
                         <div className="text-sm font-mono text-blue-600">{feedback.id}</div>
                         <div className="text-sm text-gray-900 truncate" title={feedback.customerName}>
@@ -1325,6 +1334,14 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
             </div>
           </div>
         </div>
+      )}
+
+      {/* Feedback Details Panel */}
+      {selectedFeedback && (
+        <FeedbackDetailsPanel
+          feedback={selectedFeedback}
+          onClose={() => setSelectedFeedback(null)}
+        />
       )}
       </div>
     </>
