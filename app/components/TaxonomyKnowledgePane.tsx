@@ -954,40 +954,56 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
       const hasChildren = theme.children && theme.children.length > 0;
 
       rows.push(
-        <div 
+        <TableRow 
           key={theme.id} 
-          className="px-3 py-2 hover:bg-gray-50 cursor-pointer grid grid-cols-4 gap-4 items-center"
+          className="hover:bg-gray-50 border-b border-gray-200 cursor-pointer"
           onClick={() => handleThemeClick(theme)}
         >
-          <div 
-            className="flex items-center gap-2"
-            style={{ paddingLeft: `${level * 16}px` }}
-          >
-            {hasChildren ? (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleThemeExpansion(theme.id);
-                }}
-                className="p-0.5 hover:bg-gray-200 rounded"
-              >
-                {isExpanded ? (
-                  <ChevronDown className="w-3 h-3 text-gray-600" />
-                ) : (
-                  <ChevronRight className="w-3 h-3 text-gray-600" />
-                )}
-              </button>
-            ) : (
-              <div className="w-4" />
-            )}
-            <span className="text-sm text-gray-900">{theme.name}</span>
-          </div>
-          <div className="text-sm text-gray-700 text-center">{theme.feedbackCount}</div>
-          <div className="text-sm text-gray-700 text-center">{theme.uniqueUsers}</div>
-          <div className={`text-sm font-medium text-center ${getCsatColor(theme.csatImpact)}`}>
+          <TableCell className="font-medium text-gray-900">
+            <div 
+              className="flex items-center gap-2"
+              style={{ paddingLeft: `${level * 24}px` }}
+            >
+              {hasChildren ? (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleThemeExpansion(theme.id);
+                  }}
+                  className="p-1 hover:bg-gray-200 rounded"
+                >
+                  {isExpanded ? (
+                    <ChevronDown className="w-4 h-4 text-gray-600" />
+                  ) : (
+                    <ChevronRight className="w-4 h-4 text-gray-600" />
+                  )}
+                </button>
+              ) : (
+                <div className="w-6" />
+              )}
+              <span className={level === 0 ? 'font-semibold' : level === 1 ? 'font-medium' : ''}>{theme.name}</span>
+            </div>
+          </TableCell>
+          <TableCell className="text-center text-gray-900">{theme.feedbackCount}</TableCell>
+          <TableCell className="text-center text-gray-900">{theme.uniqueUsers}</TableCell>
+          <TableCell className={`text-center font-medium ${getCsatColor(theme.csatImpact)}`}>
             {theme.csatImpact > 0 ? '+' : ''}{theme.csatImpact}
-          </div>
-        </div>
+          </TableCell>
+          <TableCell className="text-center">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-gray-600 hover:text-gray-900 hover:bg-gray-100">
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem>View Details</DropdownMenuItem>
+                <DropdownMenuItem>View Feedback</DropdownMenuItem>
+                <DropdownMenuItem>Export Data</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </TableCell>
+        </TableRow>
       );
 
       // Add child rows if expanded
@@ -1045,7 +1061,7 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
           <TableCell className="text-center">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-gray-600 hover:text-gray-900 hover:bg-gray-100">
                   <MoreHorizontal className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
@@ -1176,19 +1192,20 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
                   </TableBody>
                 </Table>
               ) : (
-                <div className="bg-white">
-                  <div className="sticky top-0 bg-white z-10 px-6 py-3 border-b border-gray-200">
-                    <div className="grid grid-cols-4 gap-4 text-sm font-medium text-gray-700">
-                      <span>Theme Name</span>
-                      <span className="text-center"># of Feedback</span>
-                      <span className="text-center">Unique Users</span>
-                      <span className="text-center">CSAT Impact</span>
-                    </div>
-                  </div>
-                  <div className="divide-y divide-gray-100">
+                <Table>
+                  <TableHeader className="sticky top-0 bg-white z-10">
+                    <TableRow className="border-b border-gray-200">
+                      <TableHead className="text-gray-900 font-medium w-[40%]">Theme Name</TableHead>
+                      <TableHead className="text-gray-900 font-medium text-center"># of Feedback</TableHead>
+                      <TableHead className="text-gray-900 font-medium text-center">Unique Users</TableHead>
+                      <TableHead className="text-gray-900 font-medium text-center">CSAT Impact</TableHead>
+                      <TableHead className="text-gray-900 font-medium text-center w-[60px]">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
                     {renderThemeRows(getAllThemes())}
-                  </div>
-                </div>
+                  </TableBody>
+                </Table>
               )}
             </div>
           </div>
