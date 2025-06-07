@@ -19,6 +19,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
+import { FeedbackRecord, Sentiment, Priority, FeedbackType, FeedbackStatus } from '../types/feedback';
 
 interface TaxonomyNode {
   id: number;
@@ -48,24 +49,207 @@ interface ThemeItem {
 }
 
 // Mock data based on the image provided
+// Sample feedback data that matches various themes
+const sampleFeedbackForThemes: FeedbackRecord[] = [
+  {
+    id: 'FB001',
+    source: 'Zendesk',
+    dateReceived: '2024-03-15',
+    customerName: 'John Doe',
+    customerId: 'CUST001',
+    type: 'Feature Request',
+    status: 'New',
+    sentiment: 'Positive',
+    priority: 'Medium',
+    theme: 'Login and Authentication Issues',
+    content: 'Would love to see dark mode implementation',
+    summary: 'Request for dark mode theme option to reduce eye strain during night usage',
+    assignedTo: 'Sarah Chen',
+    tags: ['enhancement', 'ui'],
+    user: {
+      id: 'U123',
+      name: 'John Doe',
+      role: 'Product Manager'
+    },
+    account: {
+      id: 'ACC456',
+      name: 'Acme Corp',
+      tier: 'Enterprise'
+    }
+  },
+  {
+    id: 'FB002',
+    source: 'Gong',
+    dateReceived: '2024-03-14',
+    customerName: 'Jane Smith',
+    customerId: 'CUST002',
+    type: 'Bug',
+    status: 'In Review',
+    sentiment: 'Negative',
+    priority: 'High',
+    theme: 'Login and Authentication Issues',
+    content: 'SSO authentication failing intermittently',
+    summary: 'Critical bug: SSO authentication fails randomly, affecting user access',
+    assignedTo: 'Mike Johnson',
+    tags: ['bug', 'sso', 'authentication'],
+    user: {
+      id: 'U456',
+      name: 'Jane Smith',
+      role: 'Technical Lead'
+    },
+    account: {
+      id: 'ACC789',
+      name: 'TechCorp Solutions',
+      tier: 'Enterprise'
+    }
+  },
+  {
+    id: 'FB003',
+    source: 'Zendesk',
+    dateReceived: '2024-03-13',
+    customerName: 'Alex Brown',
+    customerId: 'CUST003',
+    type: 'Complaint',
+    status: 'New',
+    sentiment: 'Negative',
+    priority: 'High',
+    theme: 'Login and Authentication Issues',
+    content: 'Cannot log in with Google OAuth, keeps redirecting to error page',
+    summary: 'OAuth integration broken for Google authentication',
+    tags: ['oauth', 'google', 'login'],
+    user: {
+      id: 'U789',
+      name: 'Alex Brown',
+      role: 'Operations Manager'
+    },
+    account: {
+      id: 'ACC101',
+      name: 'Startup Innovators',
+      tier: 'Startup'
+    }
+  },
+  {
+    id: 'FB004',
+    source: 'Other',
+    dateReceived: '2024-03-12',
+    customerName: 'Maria Garcia',
+    customerId: 'CUST004',
+    type: 'Feature Request',
+    status: 'In Review',
+    sentiment: 'Neutral',
+    priority: 'Medium',
+    theme: 'Login and Authentication Issues',
+    content: 'Need two-factor authentication for better security',
+    summary: 'Request for 2FA implementation to enhance account security',
+    assignedTo: 'David Wilson',
+    tags: ['2fa', 'security', 'authentication'],
+    user: {
+      id: 'U901',
+      name: 'Maria Garcia',
+      role: 'Security Manager'
+    },
+    account: {
+      id: 'ACC202',
+      name: 'SecureData Corp',
+      tier: 'Enterprise'
+    }
+  },
+  {
+    id: 'FB005',
+    source: 'Twitter',
+    dateReceived: '2024-03-11',
+    customerName: 'Robert Kim',
+    customerId: 'CUST005',
+    type: 'Complaint',
+    status: 'Addressed',
+    sentiment: 'Negative',
+    priority: 'Medium',
+    theme: 'Content Discovery and Search',
+    content: 'Search function is terrible, never finds what I need',
+    summary: 'Search functionality not returning relevant results',
+    tags: ['search', 'ux', 'discovery'],
+    user: {
+      id: 'U234',
+      name: 'Robert Kim',
+      role: 'Content Manager'
+    },
+    account: {
+      id: 'ACC303',
+      name: 'Content Creators LLC',
+      tier: 'Business'
+    }
+  },
+  {
+    id: 'FB006',
+    source: 'G2',
+    dateReceived: '2024-03-10',
+    customerName: 'Emily Chen',
+    customerId: 'CUST006',
+    type: 'Feature Request',
+    status: 'New',
+    sentiment: 'Positive',
+    priority: 'Low',
+    theme: 'Design Editor Usability',
+    content: 'Love the new design tools, but need more templates',
+    summary: 'Positive feedback on design tools with request for more templates',
+    tags: ['design', 'templates', 'enhancement'],
+    user: {
+      id: 'U567',
+      name: 'Emily Chen',
+      role: 'UI Designer'
+    },
+    account: {
+      id: 'ACC404',
+      name: 'Design Studio Pro',
+      tier: 'Business'
+    }
+  },
+  {
+    id: 'FB007',
+    source: 'Salesforce',
+    dateReceived: '2024-03-09',
+    customerName: 'Michael Torres',
+    customerId: 'CUST007',
+    type: 'Bug',
+    status: 'In Review',
+    sentiment: 'Negative',
+    priority: 'High',
+    theme: 'Performance and Loading',
+    content: 'Dashboard takes forever to load, especially with large datasets',
+    summary: 'Performance issues with dashboard loading times for large datasets',
+    assignedTo: 'Lisa Wang',
+    tags: ['performance', 'dashboard', 'loading'],
+    user: {
+      id: 'U890',
+      name: 'Michael Torres',
+      role: 'Data Analyst'
+    },
+    account: {
+      id: 'ACC505',
+      name: 'Big Data Solutions',
+      tier: 'Enterprise'
+    }
+  }
+];
+
 const mockTaxonomyData: TaxonomyNode[] = [
   {
     id: 1,
-    name: 'L1: Account Management',
+    name: 'Overall Satisfaction with Account Management',
     level: 1,
-    feedbackCount: 200,
-    uniqueUsers: 156,
-    csatImpact: -2.4,
+    feedbackCount: 45,
+    uniqueUsers: 32,
+    csatImpact: -2.1,
     description: 'All feedback related to account management processes and features.',
     themes: [
       {
         id: 2,
-        name: 'L2: User Identity & Authentication',
+        name: 'Login and Authentication Issues',
         level: 2,
         parent: 1,
-        feedbackCount: 100,
-        uniqueUsers: 78,
-        csatImpact: -1.8,
+        feedbackCount: 18,
+        uniqueUsers: 14,
+        csatImpact: -2.8,
         description: 'Feedback about login, registration, and authentication issues.',
         subthemes: [
           {
@@ -668,6 +852,78 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
     return 'text-red-600';
   };
 
+  // Function to get feedback that matches a selected theme/node
+  const getFeedbackForNode = (node: TaxonomyNode): FeedbackRecord[] => {
+    // Match feedback based on node name or level
+    let matchingFeedback: FeedbackRecord[] = [];
+    
+    // For Login and Authentication Issues theme specifically
+    if (node.name.includes('Login and Authentication Issues')) {
+      matchingFeedback = sampleFeedbackForThemes.filter(feedback => 
+        feedback.theme === 'Login and Authentication Issues'
+      );
+    }
+    // For other themes, match by partial name matching or return sample data
+    else if (node.name.includes('Content Discovery') || node.name.includes('Search')) {
+      matchingFeedback = sampleFeedbackForThemes.filter(feedback => 
+        feedback.theme === 'Content Discovery and Search'
+      );
+    }
+    else if (node.name.includes('Design Editor') || node.name.includes('Usability')) {
+      matchingFeedback = sampleFeedbackForThemes.filter(feedback => 
+        feedback.theme === 'Design Editor Usability'
+      );
+    }
+    else if (node.name.includes('Performance') || node.name.includes('Loading')) {
+      matchingFeedback = sampleFeedbackForThemes.filter(feedback => 
+        feedback.theme === 'Performance and Loading'
+      );
+    }
+    else {
+      // Return first 3 feedback items as default
+      matchingFeedback = sampleFeedbackForThemes.slice(0, 3);
+    }
+    
+    return matchingFeedback;
+  };
+
+  const getSentimentColor = (sentiment: Sentiment) => {
+    switch (sentiment) {
+      case 'Positive':
+        return 'bg-green-100 text-green-900';
+      case 'Negative':
+        return 'bg-red-100 text-red-900';
+      default:
+        return 'bg-gray-100 text-gray-900';
+    }
+  };
+
+  const getPriorityColor = (priority: Priority) => {
+    switch (priority) {
+      case 'High':
+        return 'bg-red-100 text-red-900';
+      case 'Medium':
+        return 'bg-yellow-100 text-yellow-900';
+      case 'Low':
+        return 'bg-green-100 text-green-900';
+      default:
+        return 'bg-gray-100 text-gray-900';
+    }
+  };
+
+  const getStatusColor = (status: FeedbackStatus) => {
+    switch (status) {
+      case 'New':
+        return 'bg-blue-100 text-blue-900';
+      case 'In Review':
+        return 'bg-yellow-100 text-yellow-900';
+      case 'Addressed':
+        return 'bg-green-100 text-green-900';
+      default:
+        return 'bg-gray-100 text-gray-900';
+    }
+  };
+
   const handleThemeClick = (theme: ThemeItem) => {
     // Convert ThemeItem to TaxonomyNode format for consistency with right panel
     const themeAsNode: TaxonomyNode = {
@@ -693,10 +949,12 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
         <div 
           key={theme.id} 
           className="px-3 py-2 hover:bg-gray-50 cursor-pointer grid grid-cols-4 gap-4 items-center"
-          style={{ paddingLeft: `${12 + level * 16}px` }}
           onClick={() => handleThemeClick(theme)}
         >
-          <div className="flex items-center gap-2">
+          <div 
+            className="flex items-center gap-2"
+            style={{ paddingLeft: `${level * 16}px` }}
+          >
             {hasChildren ? (
               <button
                 onClick={(e) => {
@@ -716,11 +974,11 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
             )}
             <span className="text-sm text-gray-900">{theme.name}</span>
           </div>
-          <span className="text-sm text-gray-700 text-center">{theme.feedbackCount}</span>
-          <span className="text-sm text-gray-700 text-center">{theme.uniqueUsers}</span>
-          <span className={`text-sm font-medium text-center ${getCsatColor(theme.csatImpact)}`}>
+          <div className="text-sm text-gray-700 text-center">{theme.feedbackCount}</div>
+          <div className="text-sm text-gray-700 text-center">{theme.uniqueUsers}</div>
+          <div className={`text-sm font-medium text-center ${getCsatColor(theme.csatImpact)}`}>
             {theme.csatImpact > 0 ? '+' : ''}{theme.csatImpact}
-          </span>
+          </div>
         </div>
       );
 
@@ -988,21 +1246,54 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
                 </div>
               </div>
 
-              {/* Themes Section */}
+              {/* Feedback Section */}
               <div>
-                <label className="text-sm font-medium text-gray-500">Themes</label>
+                <label className="text-sm font-medium text-gray-500">Feedback</label>
                 
                 <div className="bg-white rounded-lg border">
                   <div className="px-3 py-2 border-b border-gray-200 bg-gray-50">
-                    <div className="grid grid-cols-4 gap-4 text-xs font-medium text-gray-700">
-                      <span>Name</span>
-                      <span className="text-center"># of Feedback</span>
-                      <span className="text-center">Unique Users</span>
-                      <span className="text-center">CSAT Impact</span>
+                    <div className="grid grid-cols-6 gap-2 text-xs font-medium text-gray-700">
+                      <span>ID</span>
+                      <span>Customer</span>
+                      <span>Type</span>
+                      <span className="text-center">Priority</span>
+                      <span className="text-center">Status</span>
+                      <span className="text-center">Sentiment</span>
                     </div>
                   </div>
-                  <div className="divide-y divide-gray-100">
-                    {renderThemeRows(getThemesForNode(selectedNode))}
+                  <div className="divide-y divide-gray-100 max-h-64 overflow-y-auto">
+                    {getFeedbackForNode(selectedNode).map((feedback) => (
+                      <div 
+                        key={feedback.id}
+                        className="px-3 py-3 hover:bg-gray-50 cursor-pointer grid grid-cols-6 gap-2 items-center"
+                      >
+                        <div className="text-sm font-mono text-blue-600">{feedback.id}</div>
+                        <div className="text-sm text-gray-900 truncate" title={feedback.customerName}>
+                          {feedback.customerName}
+                        </div>
+                        <div className="text-sm text-gray-700">{feedback.type}</div>
+                        <div className="text-center">
+                          <Badge className={`text-xs ${getPriorityColor(feedback.priority)}`}>
+                            {feedback.priority}
+                          </Badge>
+                        </div>
+                        <div className="text-center">
+                          <Badge className={`text-xs ${getStatusColor(feedback.status)}`}>
+                            {feedback.status}
+                          </Badge>
+                        </div>
+                        <div className="text-center">
+                          <Badge className={`text-xs ${getSentimentColor(feedback.sentiment)}`}>
+                            {feedback.sentiment}
+                          </Badge>
+                        </div>
+                      </div>
+                    ))}
+                    {getFeedbackForNode(selectedNode).length === 0 && (
+                      <div className="px-3 py-6 text-center text-gray-500 text-sm">
+                        No feedback found for this item
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
