@@ -38,6 +38,15 @@ interface TaxonomyKnowledgePaneProps {
   onClose: () => void;
 }
 
+interface ThemeItem {
+  id: number;
+  name: string;
+  feedbackCount: number;
+  uniqueUsers: number;
+  csatImpact: number;
+  children?: ThemeItem[];
+}
+
 // Mock data based on the image provided
 const mockTaxonomyData: TaxonomyNode[] = [
   {
@@ -347,6 +356,7 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
   const [expandedNodes, setExpandedNodes] = useState<Set<number>>(new Set([1])); // L1: Account Management expanded by default
   const [selectedNode, setSelectedNode] = useState<TaxonomyNode | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [expandedThemes, setExpandedThemes] = useState<Set<number>>(new Set([1001])); // First theme expanded by default
 
   if (!isOpen) return null;
 
@@ -368,11 +378,197 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
     setSelectedNode(node);
   };
 
+  const toggleThemeExpansion = (themeId: number) => {
+    const newExpanded = new Set(expandedThemes);
+    if (newExpanded.has(themeId)) {
+      newExpanded.delete(themeId);
+    } else {
+      newExpanded.add(themeId);
+    }
+    setExpandedThemes(newExpanded);
+  };
+
+  // Get fake theme data based on selected node
+  const getThemesForNode = (node: TaxonomyNode): ThemeItem[] => {
+    // Generate different themes based on node level and type
+    switch (node.level) {
+      case 1: // L1 nodes get high-level themes
+        if (node.name.includes('Account Management')) {
+          return [
+            {
+              id: 1001,
+              name: 'Overall Satisfaction with Account Management',
+              feedbackCount: 20,
+              uniqueUsers: 15,
+              csatImpact: -2.1,
+              children: [
+                { id: 1002, name: 'Lorem Ipsum', feedbackCount: 12, uniqueUsers: 8, csatImpact: -1.8 },
+                { id: 1003, name: 'Dolor Ipsum', feedbackCount: 8, uniqueUsers: 7, csatImpact: -2.4 }
+              ]
+            },
+            {
+              id: 1004,
+              name: 'Dolor Ipsum',
+              feedbackCount: 20,
+              uniqueUsers: 14,
+              csatImpact: -1.5,
+              children: [
+                { id: 1005, name: 'Ipsum Ipsum', feedbackCount: 15, uniqueUsers: 10, csatImpact: -1.2 },
+                { id: 1006, name: 'Lorem Ipsum', feedbackCount: 5, uniqueUsers: 4, csatImpact: -2.1 }
+              ]
+            },
+            {
+              id: 1007,
+              name: 'Lorem Ipsum',
+              feedbackCount: 20,
+              uniqueUsers: 12,
+              csatImpact: -0.8,
+              children: [
+                { id: 1008, name: 'Lorem Ipsum', feedbackCount: 18, uniqueUsers: 11, csatImpact: -0.6 },
+                { id: 1009, name: 'Lorem Ipsum', feedbackCount: 2, uniqueUsers: 1, csatImpact: -2.5 }
+              ]
+            }
+          ];
+        } else if (node.name.includes('Content & Workspace')) {
+          return [
+            {
+              id: 2001,
+              name: 'Content Discovery Issues',
+              feedbackCount: 15,
+              uniqueUsers: 12,
+              csatImpact: -1.8,
+              children: [
+                { id: 2002, name: 'Search Functionality', feedbackCount: 10, uniqueUsers: 8, csatImpact: -2.1 },
+                { id: 2003, name: 'Content Visibility', feedbackCount: 5, uniqueUsers: 4, csatImpact: -1.2 }
+              ]
+            },
+            {
+              id: 2004,
+              name: 'Workspace Organization',
+              feedbackCount: 12,
+              uniqueUsers: 9,
+              csatImpact: -1.3,
+              children: [
+                { id: 2005, name: 'Folder Structure', feedbackCount: 8, uniqueUsers: 6, csatImpact: -1.1 },
+                { id: 2006, name: 'Content Categorization', feedbackCount: 4, uniqueUsers: 3, csatImpact: -1.8 }
+              ]
+            }
+          ];
+        }
+        break;
+      case 2: // L2 nodes get more specific themes
+        return [
+          {
+            id: 3001,
+            name: 'User Experience Pain Points',
+            feedbackCount: 8,
+            uniqueUsers: 6,
+            csatImpact: -1.5,
+            children: [
+              { id: 3002, name: 'Navigation Confusion', feedbackCount: 5, uniqueUsers: 4, csatImpact: -1.8 },
+              { id: 3003, name: 'Interface Complexity', feedbackCount: 3, uniqueUsers: 2, csatImpact: -1.0 }
+            ]
+          },
+          {
+            id: 3004,
+            name: 'Feature Requests',
+            feedbackCount: 6,
+            uniqueUsers: 5,
+            csatImpact: 0.2,
+            children: [
+              { id: 3005, name: 'Automation Requests', feedbackCount: 4, uniqueUsers: 3, csatImpact: 0.5 },
+              { id: 3006, name: 'Integration Needs', feedbackCount: 2, uniqueUsers: 2, csatImpact: -0.3 }
+            ]
+          }
+        ];
+      case 3: // L3 nodes get very specific themes
+        return [
+          {
+            id: 4001,
+            name: 'Specific Implementation Issues',
+            feedbackCount: 4,
+            uniqueUsers: 3,
+            csatImpact: -2.0,
+            children: [
+              { id: 4002, name: 'Technical Errors', feedbackCount: 2, uniqueUsers: 2, csatImpact: -3.0 },
+              { id: 4003, name: 'Performance Issues', feedbackCount: 2, uniqueUsers: 1, csatImpact: -1.0 }
+            ]
+          }
+        ];
+    }
+    
+    // Default themes
+    return [
+      {
+        id: 5001,
+        name: 'General Feedback Themes',
+        feedbackCount: 5,
+        uniqueUsers: 4,
+        csatImpact: -1.0,
+        children: [
+          { id: 5002, name: 'Usability Concerns', feedbackCount: 3, uniqueUsers: 2, csatImpact: -1.2 },
+          { id: 5003, name: 'Feature Suggestions', feedbackCount: 2, uniqueUsers: 2, csatImpact: -0.8 }
+        ]
+      }
+    ];
+  };
+
   const getCsatColor = (impact: number) => {
     if (impact >= 0) return 'text-green-600';
     if (impact >= -1) return 'text-yellow-600';
     if (impact >= -2) return 'text-orange-600';
     return 'text-red-600';
+  };
+
+  const renderThemeRows = (themes: ThemeItem[], level: number = 0): React.JSX.Element[] => {
+    const rows: React.JSX.Element[] = [];
+
+    themes.forEach((theme) => {
+      const isExpanded = expandedThemes.has(theme.id);
+      const hasChildren = theme.children && theme.children.length > 0;
+
+      rows.push(
+        <div 
+          key={theme.id} 
+          className="px-3 py-2 hover:bg-gray-50 cursor-pointer grid grid-cols-4 gap-4 items-center"
+          style={{ paddingLeft: `${12 + level * 16}px` }}
+        >
+          <div className="flex items-center gap-2">
+            {hasChildren ? (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleThemeExpansion(theme.id);
+                }}
+                className="p-0.5 hover:bg-gray-200 rounded"
+              >
+                {isExpanded ? (
+                  <ChevronDown className="w-3 h-3 text-gray-600" />
+                ) : (
+                  <ChevronRight className="w-3 h-3 text-gray-600" />
+                )}
+              </button>
+            ) : (
+              <div className="w-4" />
+            )}
+            <span className="text-sm text-gray-900">{theme.name}</span>
+          </div>
+          <span className="text-sm text-gray-700 text-center">{theme.feedbackCount}</span>
+          <span className="text-sm text-gray-700 text-center">{theme.uniqueUsers}</span>
+          <span className={`text-sm font-medium text-center ${getCsatColor(theme.csatImpact)}`}>
+            {theme.csatImpact > 0 ? '+' : ''}{theme.csatImpact}
+          </span>
+        </div>
+      );
+
+      // Add child rows if expanded
+      if (isExpanded && hasChildren) {
+        const childRows = renderThemeRows(theme.children!, level + 1);
+        rows.push(...childRows);
+      }
+    });
+
+    return rows;
   };
 
   const renderTaxonomyRows = (nodes: TaxonomyNode[], level: number = 1): React.JSX.Element[] => {
@@ -536,7 +732,7 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
 
         {/* Right Panel for Node Details */}
         {selectedNode && (
-          <div className="w-80 border-l border-gray-200 bg-gray-50 flex flex-col">
+          <div className="w-[32rem] border-l border-gray-200 bg-gray-50 flex flex-col">
             <div className="p-4 bg-white border-b border-gray-200">
               <div className="flex items-center justify-between">
                 <h3 className="font-medium text-gray-900">Node Details</h3>
@@ -551,62 +747,100 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
               </div>
             </div>
             
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div className="flex-1 overflow-y-auto p-4 space-y-6">
+              {/* Node Title */}
               <div>
-                <h4 className="font-medium text-gray-900 mb-2">{selectedNode.name}</h4>
-                <p className="text-sm text-gray-600">{selectedNode.description}</p>
+                <h4 className="text-lg font-semibold text-gray-900 mb-2">{selectedNode.name}</h4>
               </div>
 
+              {/* Scorecards */}
               <div className="space-y-3">
                 <div className="bg-white p-3 rounded-lg border">
-                  <div className="text-sm text-gray-600">Feedback Count</div>
+                  <div className="text-sm text-gray-600"># of Feedback</div>
                   <div className="text-xl font-semibold text-gray-900">{selectedNode.feedbackCount}</div>
                 </div>
                 <div className="bg-white p-3 rounded-lg border">
-                  <div className="text-sm text-gray-600">Unique Users</div>
-                  <div className="text-xl font-semibold text-gray-900">{selectedNode.uniqueUsers}</div>
+                  <div className="text-sm text-gray-600"># CSAT Impact</div>
+                  <div className="text-sm text-gray-500">Empty</div>
                 </div>
                 <div className="bg-white p-3 rounded-lg border">
-                  <div className="text-sm text-gray-600">CSAT Impact</div>
-                  <div className={`text-xl font-semibold ${getCsatColor(selectedNode.csatImpact)}`}>
-                    {selectedNode.csatImpact > 0 ? '+' : ''}{selectedNode.csatImpact}
-                  </div>
+                  <div className="text-sm text-gray-600"># Parent Item</div>
+                  <div className="text-sm text-gray-500">Empty</div>
                 </div>
-              </div>
-
-              <div className="space-y-2">
-                <h5 className="font-medium text-gray-900">Actions</h5>
-                <div className="space-y-2">
-                  <Button variant="outline" size="sm" className="w-full justify-start">
-                    View Related Feedback
-                  </Button>
-                  <Button variant="outline" size="sm" className="w-full justify-start">
-                    Analyze Sentiment
-                  </Button>
-                  <Button variant="outline" size="sm" className="w-full justify-start">
-                    Export Data
-                  </Button>
-                </div>
-              </div>
-
-              {(selectedNode.themes || selectedNode.subthemes) && (
-                <div className="space-y-2">
-                  <h5 className="font-medium text-gray-900">
-                    {selectedNode.level === 1 ? 'Themes' : 'Sub-themes'}
-                  </h5>
+                <div className="bg-white p-3 rounded-lg border">
+                  <div className="text-sm text-gray-600"># Sub-item</div>
                   <div className="space-y-1">
                     {(selectedNode.themes || selectedNode.subthemes || []).map((child) => (
-                      <div 
-                        key={child.id} 
-                        className="text-sm p-2 bg-white rounded border cursor-pointer hover:bg-gray-50"
-                        onClick={() => setSelectedNode(child)}
-                      >
-                        {child.name}
+                      <div key={child.id} className="flex items-center gap-2">
+                        <span className="text-sm text-blue-600">📁</span>
+                        <span className="text-sm text-gray-900">{child.name}</span>
                       </div>
                     ))}
                   </div>
                 </div>
-              )}
+                <div className="bg-white p-3 rounded-lg border">
+                  <div className="text-sm text-gray-600"># Unique Users</div>
+                  <div className="text-sm text-gray-500">Empty</div>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-blue-500">ℹ️</span>
+                  <h5 className="font-semibold text-gray-900">Description</h5>
+                </div>
+                <div className="bg-white p-4 rounded-lg border">
+                  <p className="text-sm text-gray-700 leading-relaxed">{selectedNode.description}</p>
+                </div>
+              </div>
+
+              {/* Themes Section */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-600">🎯</span>
+                  <h5 className="font-semibold text-gray-900">Themes</h5>
+                </div>
+                
+                <div className="bg-white rounded-lg border">
+                  <div className="px-3 py-2 border-b border-gray-200 bg-gray-50">
+                    <div className="grid grid-cols-4 gap-4 text-xs font-medium text-gray-700">
+                      <span>Name</span>
+                      <span className="text-center"># of Feedback</span>
+                      <span className="text-center">Unique Users</span>
+                      <span className="text-center">CSAT Impact</span>
+                    </div>
+                  </div>
+                  <div className="divide-y divide-gray-100">
+                    {renderThemeRows(getThemesForNode(selectedNode))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Actions Section - Moved to bottom */}
+              <div className="space-y-3 pt-4 border-t border-gray-200">
+                <h5 className="font-semibold text-gray-900">Actions</h5>
+                <div className="space-y-2">
+                  <Button variant="outline" size="sm" className="w-full justify-start text-gray-800 border-gray-300 hover:bg-gray-100">
+                    Edit node
+                  </Button>
+                  <Button variant="outline" size="sm" className="w-full justify-start text-gray-800 border-gray-300 hover:bg-gray-100">
+                    Promote node
+                  </Button>
+                  <Button variant="outline" size="sm" className="w-full justify-start text-gray-800 border-gray-300 hover:bg-gray-100">
+                    Demote node
+                  </Button>
+                  <Button variant="outline" size="sm" className="w-full justify-start text-gray-800 border-gray-300 hover:bg-gray-100">
+                    Split node
+                  </Button>
+                  <Button variant="outline" size="sm" className="w-full justify-start text-gray-800 border-gray-300 hover:bg-gray-100">
+                    Merge node
+                  </Button>
+                  <Button variant="outline" size="sm" className="w-full justify-start text-red-700 border-red-300 hover:bg-red-50">
+                    Delete node
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         )}
