@@ -359,6 +359,7 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
   const [expandedThemes, setExpandedThemes] = useState<Set<number>>(new Set([1001])); // First theme expanded by default
   const [panelWidth, setPanelWidth] = useState(600); // Default width like FeedbackDetailsPanel
   const [isResizing, setIsResizing] = useState(false);
+  const [activeView, setActiveView] = useState<'taxonomy' | 'themes'>('taxonomy');
 
   // Handle mouse events for resizing - must be defined before useEffect
   const handleMouseMove = React.useCallback((e: MouseEvent) => {
@@ -431,6 +432,108 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
       newExpanded.add(themeId);
     }
     setExpandedThemes(newExpanded);
+  };
+
+  // Get comprehensive themes data for the themes view
+  const getAllThemes = (): ThemeItem[] => {
+    return [
+      {
+        id: 2001,
+        name: 'Overall Satisfaction with Account Management',
+        feedbackCount: 45,
+        uniqueUsers: 32,
+        csatImpact: -2.1,
+        children: [
+          { id: 2002, name: 'Login and Authentication Issues', feedbackCount: 18, uniqueUsers: 14, csatImpact: -2.8 },
+          { id: 2003, name: 'Account Settings Confusion', feedbackCount: 15, uniqueUsers: 12, csatImpact: -1.9 },
+          { id: 2004, name: 'Profile Management Problems', feedbackCount: 12, uniqueUsers: 6, csatImpact: -1.4 }
+        ]
+      },
+      {
+        id: 2005,
+        name: 'Content Discovery and Search',
+        feedbackCount: 38,
+        uniqueUsers: 29,
+        csatImpact: -1.8,
+        children: [
+          { id: 2006, name: 'Search Results Relevance', feedbackCount: 22, uniqueUsers: 18, csatImpact: -2.2 },
+          { id: 2007, name: 'Content Categorization Issues', feedbackCount: 10, uniqueUsers: 8, csatImpact: -1.5 },
+          { id: 2008, name: 'Filter and Sort Functionality', feedbackCount: 6, uniqueUsers: 3, csatImpact: -1.1 }
+        ]
+      },
+      {
+        id: 2009,
+        name: 'Design Editor Usability',
+        feedbackCount: 52,
+        uniqueUsers: 41,
+        csatImpact: -1.6,
+        children: [
+          { id: 2010, name: 'Element Manipulation Difficulties', feedbackCount: 28, uniqueUsers: 24, csatImpact: -1.9 },
+          { id: 2011, name: 'Canvas Performance Issues', feedbackCount: 16, uniqueUsers: 12, csatImpact: -1.4 },
+          { id: 2012, name: 'Tool Accessibility Problems', feedbackCount: 8, uniqueUsers: 5, csatImpact: -1.2 }
+        ]
+      },
+      {
+        id: 2013,
+        name: 'Text and Typography Features',
+        feedbackCount: 31,
+        uniqueUsers: 24,
+        csatImpact: -1.3,
+        children: [
+          { id: 2014, name: 'Font Selection and Loading', feedbackCount: 19, uniqueUsers: 15, csatImpact: -1.6 },
+          { id: 2015, name: 'Text Formatting Options', feedbackCount: 8, uniqueUsers: 6, csatImpact: -1.0 },
+          { id: 2016, name: 'Typography Alignment Issues', feedbackCount: 4, uniqueUsers: 3, csatImpact: -0.9 }
+        ]
+      },
+      {
+        id: 2017,
+        name: 'Workspace Organization',
+        feedbackCount: 29,
+        uniqueUsers: 22,
+        csatImpact: -1.4,
+        children: [
+          { id: 2018, name: 'Folder Structure Management', feedbackCount: 17, uniqueUsers: 13, csatImpact: -1.7 },
+          { id: 2019, name: 'Content Duplication Features', feedbackCount: 8, uniqueUsers: 6, csatImpact: -1.2 },
+          { id: 2020, name: 'Navigation and Access Rights', feedbackCount: 4, uniqueUsers: 3, csatImpact: -0.8 }
+        ]
+      },
+      {
+        id: 2021,
+        name: 'Performance and Loading',
+        feedbackCount: 26,
+        uniqueUsers: 19,
+        csatImpact: -2.3,
+        children: [
+          { id: 2022, name: 'Page Load Times', feedbackCount: 15, uniqueUsers: 12, csatImpact: -2.7 },
+          { id: 2023, name: 'Editor Lag and Responsiveness', feedbackCount: 8, uniqueUsers: 5, csatImpact: -2.1 },
+          { id: 2024, name: 'Asset Loading Issues', feedbackCount: 3, uniqueUsers: 2, csatImpact: -1.8 }
+        ]
+      },
+      {
+        id: 2025,
+        name: 'Feature Requests and Enhancements',
+        feedbackCount: 41,
+        uniqueUsers: 33,
+        csatImpact: 0.4,
+        children: [
+          { id: 2026, name: 'Advanced Design Tools', feedbackCount: 22, uniqueUsers: 19, csatImpact: 0.8 },
+          { id: 2027, name: 'Collaboration Features', feedbackCount: 12, uniqueUsers: 9, csatImpact: 0.3 },
+          { id: 2028, name: 'Integration Requests', feedbackCount: 7, uniqueUsers: 5, csatImpact: -0.1 }
+        ]
+      },
+      {
+        id: 2029,
+        name: 'Mobile and Cross-Platform',
+        feedbackCount: 18,
+        uniqueUsers: 14,
+        csatImpact: -1.1,
+        children: [
+          { id: 2030, name: 'Mobile App Functionality', feedbackCount: 11, uniqueUsers: 9, csatImpact: -1.4 },
+          { id: 2031, name: 'Cross-Browser Compatibility', feedbackCount: 5, uniqueUsers: 3, csatImpact: -0.9 },
+          { id: 2032, name: 'Responsive Design Issues', feedbackCount: 2, uniqueUsers: 2, csatImpact: -0.6 }
+        ]
+      }
+    ];
   };
 
   // Get fake theme data based on selected node
@@ -565,6 +668,20 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
     return 'text-red-600';
   };
 
+  const handleThemeClick = (theme: ThemeItem) => {
+    // Convert ThemeItem to TaxonomyNode format for consistency with right panel
+    const themeAsNode: TaxonomyNode = {
+      id: theme.id,
+      name: theme.name,
+      level: 0, // Themes don't have levels
+      feedbackCount: theme.feedbackCount,
+      uniqueUsers: theme.uniqueUsers,
+      csatImpact: theme.csatImpact,
+      description: `This theme represents feedback patterns related to ${theme.name.toLowerCase()}. Users have shared various insights and experiences that help us understand their needs and pain points in this area.`
+    };
+    setSelectedNode(themeAsNode);
+  };
+
   const renderThemeRows = (themes: ThemeItem[], level: number = 0): React.JSX.Element[] => {
     const rows: React.JSX.Element[] = [];
 
@@ -577,6 +694,7 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
           key={theme.id} 
           className="px-3 py-2 hover:bg-gray-50 cursor-pointer grid grid-cols-4 gap-4 items-center"
           style={{ paddingLeft: `${12 + level * 16}px` }}
+          onClick={() => handleThemeClick(theme)}
         >
           <div className="flex items-center gap-2">
             {hasChildren ? (
@@ -709,9 +827,28 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
           <div className="flex-shrink-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
             <div className="flex items-center gap-4">
               <h2 className="text-xl font-semibold text-gray-900">Taxonomy Explorer</h2>
-              <Badge variant="outline" className="text-gray-700">
-                Hierarchical View
-              </Badge>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => setActiveView('taxonomy')}
+                  className={`px-3 py-1 text-sm rounded-md transition-colors ${
+                    activeView === 'taxonomy'
+                      ? 'bg-blue-100 text-blue-700'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  L1/L2/L3
+                </button>
+                <button
+                  onClick={() => setActiveView('themes')}
+                  className={`px-3 py-1 text-sm rounded-md transition-colors ${
+                    activeView === 'themes'
+                      ? 'bg-blue-100 text-blue-700'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  Themes/Sub-themes
+                </button>
+              </div>
             </div>
             <div className="flex items-center gap-2">
               <div className="relative">
@@ -757,20 +894,36 @@ export default function TaxonomyKnowledgePane({ isOpen, onClose }: TaxonomyKnowl
           {/* Table Content */}
           <div className="flex-1 overflow-hidden">
             <div className="h-full overflow-auto">
-              <Table>
-                <TableHeader className="sticky top-0 bg-white z-10">
-                  <TableRow className="border-b border-gray-200">
-                    <TableHead className="text-gray-900 font-medium w-[40%]">Name</TableHead>
-                    <TableHead className="text-gray-900 font-medium text-center"># of Feedback</TableHead>
-                    <TableHead className="text-gray-900 font-medium text-center">Unique Users</TableHead>
-                    <TableHead className="text-gray-900 font-medium text-center">CSAT Impact</TableHead>
-                    <TableHead className="text-gray-900 font-medium text-center w-[60px]">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {renderTaxonomyRows(mockTaxonomyData)}
-                </TableBody>
-              </Table>
+              {activeView === 'taxonomy' ? (
+                <Table>
+                  <TableHeader className="sticky top-0 bg-white z-10">
+                    <TableRow className="border-b border-gray-200">
+                      <TableHead className="text-gray-900 font-medium w-[40%]">Name</TableHead>
+                      <TableHead className="text-gray-900 font-medium text-center"># of Feedback</TableHead>
+                      <TableHead className="text-gray-900 font-medium text-center">Unique Users</TableHead>
+                      <TableHead className="text-gray-900 font-medium text-center">CSAT Impact</TableHead>
+                      <TableHead className="text-gray-900 font-medium text-center w-[60px]">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {renderTaxonomyRows(mockTaxonomyData)}
+                  </TableBody>
+                </Table>
+              ) : (
+                <div className="bg-white">
+                  <div className="sticky top-0 bg-white z-10 px-6 py-3 border-b border-gray-200">
+                    <div className="grid grid-cols-4 gap-4 text-sm font-medium text-gray-700">
+                      <span>Theme Name</span>
+                      <span className="text-center"># of Feedback</span>
+                      <span className="text-center">Unique Users</span>
+                      <span className="text-center">CSAT Impact</span>
+                    </div>
+                  </div>
+                  <div className="divide-y divide-gray-100">
+                    {renderThemeRows(getAllThemes())}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
