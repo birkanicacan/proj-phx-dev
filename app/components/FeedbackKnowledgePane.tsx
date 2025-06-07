@@ -266,14 +266,14 @@ export default function FeedbackKnowledgePane({ isOpen, onClose }: FeedbackKnowl
 
   return (
     <div className={`
-      fixed bg-white border-t border-gray-200 shadow-lg transition-all duration-300 ease-in-out z-50
+      fixed bg-white border-t border-gray-200 shadow-lg transition-all duration-300 ease-in-out z-50 flex flex-col
       ${isFullScreen 
-        ? 'inset-0' 
-        : 'bottom-0 left-0 right-0 h-[60vh] max-h-[600px]'
+        ? 'inset-0 left-56' 
+        : 'bottom-0 left-56 right-0 h-[40vh] max-h-[400px]'
       }
     `}>
       {/* Header */}
-      <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+      <div className="flex-shrink-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <h2 className="text-xl font-semibold text-gray-900">Feedback Knowledge Explorer</h2>
           <div className="flex items-center gap-1">
@@ -330,17 +330,24 @@ export default function FeedbackKnowledgePane({ isOpen, onClose }: FeedbackKnowl
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 min-h-0 overflow-hidden">
         {activeTab === 'sources' && (
-          <div className="h-full p-6">
-            <div className="mb-4">
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Source Integrations</h3>
-              <p className="text-sm text-gray-600">
-                Active third-party sources feeding the Feedback object
-              </p>
+          <div className="h-full p-6 overflow-y-auto">
+            <div className="mb-4 flex justify-between items-start">
+              <div>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Source Integrations</h3>
+                <p className="text-sm text-gray-600">
+                  Active third-party sources feeding the Feedback object
+                </p>
+              </div>
+              <Button className="bg-blue-600 text-white hover:bg-blue-700 flex items-center gap-2">
+                <Plus className="h-4 w-4" />
+                Add Integration
+              </Button>
             </div>
-            <div className="border rounded-lg bg-white overflow-hidden">
-              <Table>
+            <div className="border rounded-lg bg-white">
+              <div className="overflow-y-auto max-h-80">
+                <Table>
                 <TableHeader>
                   <TableRow className="border-b border-gray-200">
                     <TableHead className="text-gray-900 font-medium">Source</TableHead>
@@ -373,13 +380,14 @@ export default function FeedbackKnowledgePane({ isOpen, onClose }: FeedbackKnowl
                   ))}
                 </TableBody>
               </Table>
+              </div>
             </div>
           </div>
         )}
 
         {activeTab === 'records' && (
           <div className="h-full flex flex-col">
-            <div className="p-6 border-b border-gray-200">
+            <div className="flex-shrink-0 p-6 border-b border-gray-200">
               <div className="flex justify-between items-center mb-4">
                 <div>
                   <h3 className="text-lg font-medium text-gray-900 mb-2">Feedback Records</h3>
@@ -421,20 +429,20 @@ export default function FeedbackKnowledgePane({ isOpen, onClose }: FeedbackKnowl
                 </div>
               </div>
             </div>
-            <div className="flex-1 overflow-auto">
+            <div className="flex-1 min-h-0 overflow-y-auto">
               <Table>
                 <TableHeader>
                   <TableRow className="border-b border-gray-200">
-                    <TableHead className="text-gray-900 font-medium sticky top-0 bg-white">Feedback</TableHead>
-                    <TableHead className="text-gray-900 font-medium sticky top-0 bg-white">Source</TableHead>
-                    <TableHead className="text-gray-900 font-medium sticky top-0 bg-white">Date</TableHead>
-                    <TableHead className="text-gray-900 font-medium sticky top-0 bg-white">User</TableHead>
-                    <TableHead className="text-gray-900 font-medium sticky top-0 bg-white">Account</TableHead>
-                    <TableHead className="text-gray-900 font-medium sticky top-0 bg-white">Type</TableHead>
-                    <TableHead className="text-gray-900 font-medium sticky top-0 bg-white">Status</TableHead>
-                    <TableHead className="text-gray-900 font-medium sticky top-0 bg-white">Sentiment</TableHead>
-                    <TableHead className="text-gray-900 font-medium sticky top-0 bg-white">Priority</TableHead>
-                    <TableHead className="text-gray-900 font-medium sticky top-0 bg-white">Tags</TableHead>
+                    <TableHead className="text-gray-900 font-medium">Feedback</TableHead>
+                    <TableHead className="text-gray-900 font-medium">Source</TableHead>
+                    <TableHead className="text-gray-900 font-medium">Date</TableHead>
+                    <TableHead className="text-gray-900 font-medium">User</TableHead>
+                    <TableHead className="text-gray-900 font-medium">Account</TableHead>
+                    <TableHead className="text-gray-900 font-medium">Type</TableHead>
+                    <TableHead className="text-gray-900 font-medium">Status</TableHead>
+                    <TableHead className="text-gray-900 font-medium">Sentiment</TableHead>
+                    <TableHead className="text-gray-900 font-medium">Priority</TableHead>
+                    <TableHead className="text-gray-900 font-medium">Tags</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -505,7 +513,7 @@ export default function FeedbackKnowledgePane({ isOpen, onClose }: FeedbackKnowl
         )}
 
         {activeTab === 'linkage' && (
-          <div className="h-full p-6">
+          <div className="h-full p-6 overflow-y-auto">
             <div className="mb-4">
               <h3 className="text-lg font-medium text-gray-900 mb-2">Object Linkage & Enrichment Context</h3>
               <p className="text-sm text-gray-600">

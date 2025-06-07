@@ -697,6 +697,9 @@ video {
 .left-3 {
   left: 0.75rem;
 }
+.left-56 {
+  left: 14rem;
+}
 .left-\[50\%\] {
   left: 50%;
 }
@@ -911,11 +914,11 @@ video {
 .h-9 {
   height: 2.25rem;
 }
+.h-\[40vh\] {
+  height: 40vh;
+}
 .h-\[500px\] {
   height: 500px;
-}
-.h-\[60vh\] {
-  height: 60vh;
 }
 .h-\[calc\(100vh-12rem\)\] {
   height: calc(100vh - 12rem);
@@ -941,8 +944,14 @@ video {
 .max-h-60 {
   max-height: 15rem;
 }
-.max-h-\[600px\] {
-  max-height: 600px;
+.max-h-80 {
+  max-height: 20rem;
+}
+.max-h-\[400px\] {
+  max-height: 400px;
+}
+.min-h-0 {
+  min-height: 0px;
 }
 .min-h-\[100px\] {
   min-height: 100px;
