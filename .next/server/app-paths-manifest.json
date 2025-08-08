@@ -1,3 +1,10 @@
 {
-  "/knowledge/page": "app/knowledge/page.js"
+  "/auth/signup/page": "app/auth/signup/page.js",
+  "/onboarding/page": "app/onboarding/page.js",
+  "/page": "app/page.js",
+  "/knowledge/page": "app/knowledge/page.js",
+  "/home/page": "app/home/page.js",
+  "/analyze/page": "app/analyze/page.js",
+  "/agents/page": "app/agents/page.js",
+  "/inbox/page": "app/inbox/page.js"
 }

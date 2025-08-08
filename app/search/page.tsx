@@ -2,6 +2,7 @@ import MainLayout from '../components/MainLayout';
 import { SearchBar } from './components/SearchBar';
 import { SearchSuggestions } from './components/SearchSuggestions';
 import { RecentSearches } from './components/RecentSearches';
+import { Suspense } from 'react';
 
 export default function SearchPage() {
   return (
@@ -11,7 +12,9 @@ export default function SearchPage() {
           {/* Search Bar */}
           <div className="flex justify-center">
             <div className="w-full max-w-3xl">
-              <SearchBar />
+              <Suspense fallback={<div className="text-sm text-gray-500">Loading search...</div>}>
+                <SearchBar />
+              </Suspense>
             </div>
           </div>
 
